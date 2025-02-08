@@ -67,13 +67,29 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
-html {
-  background-color: white;
-  color: black;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Light Mode (Default) */
+:root {
+  --background-color: white;
+  --text-color: black;
 }
 
+/* Dark Mode */
 html.dark {
-  background-color: #111;
-  color: white;
+  --background-color: #111;
+  --text-color: white;
+}
+
+/* Apply Colors */
+html,
+body {
+  scroll-behavior: smooth;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+@media (max-width: 640px) {
+  .navbar-links {
+    display: flex;
+    flex-direction: column;
+  }
 }

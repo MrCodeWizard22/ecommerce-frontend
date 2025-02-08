@@ -1,27 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CarouselCustomNavigation from "../components/Carousel";
-import CardComponent from "../components/CardComponent.jsx"; // Import your Card component
+import CardComponent from "../components/CardComponent";
+import { getAllProducts } from "../api/productApi";
 
 const Home = () => {
-  const cardData = [
-    { title: "Card 1", description: "This is the first card." },
-    { title: "Card 2", description: "This is the second card." },
-    { title: "Card 3", description: "This is the third card." },
-    { title: "Card 4", description: "This is the fourth card." },
-  ];
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    getAllProducts()
+      .then((data) => setProducts(data))
+      .catch((error) => console.error("Failed to fetch products:", error));
+  }, []);
+
   return (
-    <div className="relative w-full h-[650px]">
-      {" "}
-      {/* Adjust height as needed */}
+    <div className="relative w-full h-auto p-4">
       <CarouselCustomNavigation />
-      <div className="absolute top-2/3 mx-2 flex justify-center gap-5">
-        {cardData.map((card, index) => (
-          <CardComponent
-            key={index}
-            title={card.title}
-            description={card.description}
-          />
-        ))}
+      <div className="mt-6 flex flex-wrap justify-center gap-5">
+        {products.length > 0 ? (
+          products.map((product) => (
+            <CardComponent
+              key={product.productId}
+              id={product.productId}
+              name={product.name}
+              description={product.description}
+              image={product.image}
+              price={product.price}
+              quantity={product.quantity}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No products available.</p>
+        )}
       </div>
     </div>
   );

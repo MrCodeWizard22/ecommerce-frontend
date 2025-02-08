@@ -1,4 +1,5 @@
 import { carousel } from "@material-tailwind/react";
+import card from "@material-tailwind/react/theme/components/card";
 
 export const ImageUrls = {
   random1:
@@ -14,4 +15,10 @@ export const ImageUrls = {
     "https://images-eu.ssl-images-amazon.com/images/G/31/IMG15/dharshini/BFCM24_GW_PC_Hero_LA_2x-PC7thfeb._CB550904434_.jpg",
   carousel3:
     "https://images-eu.ssl-images-amazon.com/images/G/31/img24/Wireless/Samsung/Jan25Launch/Sale/7thFeb/Update_DesktopHeroTemplate_3000x1200._CB550938621_.jpg",
+  cardImage1: "https://m.media-amazon.com/images/I/61kDfm8FD7L._AC_SY145_.jpg",
+  cardImage2:
+    "https://m.media-amazon.com/images/I/51suEsggRLL._AC_UL480_FMwebp_QL65_.jpg",
+  cardImage3:
+    "https://m.media-amazon.com/images/I/518KOaV2b1L._AC_UL480_FMwebp_QL65_.jpg",
+  cardImage4: "https://m.media-amazon.com/images/I/41cArJ9hEeL._AC_SY200_.jpg",
 };
