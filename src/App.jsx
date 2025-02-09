@@ -4,6 +4,8 @@ import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import ProductDetails from "./pages/ProductDetails";
 import AddProduct from "./pages/AddProduct";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/api/auth/register" element={<Register />} />
+        <Route path="/api/auth/login" element={<Login />} />
       </Routes>
     </>
   );
