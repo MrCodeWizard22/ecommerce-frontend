@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -68,20 +69,20 @@ button:focus-visible {
   }
 } */
 /* Light Mode (Default) */
-:root {
+/* :root {
   --background-color: white;
   --text-color: black;
-}
+} */
 
 /* Dark Mode */
-html.dark {
+/* html.dark {
   --background-color: #111;
   --text-color: white;
-}
+} */
 
 /* Apply Colors */
-html,
-body {
+/* html, */
+/* body {
   scroll-behavior: smooth;
   background-color: var(--background-color);
   color: var(--text-color);
@@ -92,4 +93,4 @@ body {
     display: flex;
     flex-direction: column;
   }
-}
+} */

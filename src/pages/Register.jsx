@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -187,12 +188,10 @@ const Register = () => {
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
-                <a
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                  href="#"
-                >
+                <Link to={"/api/auth/login"} className="text-primary-600">
                   Login here
-                </a>
+                </Link>
+                {/* </a> */}
               </p>
             </form>
           </div>

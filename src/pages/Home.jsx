@@ -13,7 +13,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-auto p-4">
+    <div className="relative w-full h-auto p-4 dark:text-white dark:bg-gray-600">
       <CarouselCustomNavigation />
       <div className="mt-6 flex flex-wrap justify-center gap-5">
         {products.length > 0 ? (

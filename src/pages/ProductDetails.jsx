@@ -10,7 +10,7 @@ const ProductDetails = () => {
       .catch((error) => console.error("Failed to fetch product:", error));
   }, []);
   return (
-    <div>
+    <div className="container mx-auto p-4 dark:text-white dark:bg-gray-600">
       <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
         {product.name}
       </h1>
