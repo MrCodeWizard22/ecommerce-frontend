@@ -75,19 +75,8 @@ const Register = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
+    <section className="bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Flowbite
-        </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -149,7 +138,7 @@ const Register = () => {
                 onChange={handleChange}
               >
                 <option value="USER">User</option>
-                <option value="ADMIN">Admin</option>
+                <option value="SELLER">Seller</option>
               </select>
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -179,13 +168,15 @@ const Register = () => {
                   </label>
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                disabled={loading}
-              >
-                {loading ? "Registering..." : "Create an account"}
-              </button>
+              <div className="flex items-center justify-between w-full">
+                <button
+                  type="submit"
+                  className="w-1/2 mx-auto h-7 text-black dark:text-white text-sm ring-0 hover:ring-2 hover:ring-gray-600 dark:hover:ring-gray-400 focus:ring-2 focus:ring-gray-700 dark:focus:ring-gray-500 transition bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
+                  disabled={loading}
+                >
+                  {loading ? "Registering..." : "Create an account"}
+                </button>
+              </div>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link to={"/api/auth/login"} className="text-primary-600">

@@ -23,7 +23,8 @@ const Home = () => {
               id={product.productId}
               name={product.name}
               description={product.description}
-              image={product.image}
+              category={product.category}
+              imageUrl={`http://localhost:8080/images/${product.imageUrl}`}
               price={product.price}
               quantity={product.quantity}
             />

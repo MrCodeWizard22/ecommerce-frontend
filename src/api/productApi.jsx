@@ -4,6 +4,7 @@ import appClient from "./appClient";
 export const getAllProducts = async () => {
   try {
     const response = await appClient.get("/products");
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -35,6 +36,7 @@ export const addProduct = async (product) => {
     const response = await appClient.post("/products", product, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;

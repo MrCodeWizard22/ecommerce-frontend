@@ -83,20 +83,20 @@ const Navbar = () => {
           </button>
           {email ? (
             <>
-              <span className="text-gray-700 md:text-lg dark:text-white">
-                Welcome, {email}
+              <span className="text-gray-700 text-md md:text-sm dark:text-white">
+                Welcome, {email.slice(0, email.indexOf("@"))}
               </span>
               <Logout />
             </>
           ) : (
             <>
               <Link to="/api/auth/login">
-                <button className="px-3 py-1 sm:px-2 md:px-4 lg:px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                <button className=" sm:px-2 md:px-4 lg:px-6 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                   Login
                 </button>
               </Link>
               <Link to="/api/auth/register">
-                <button className="px-3 py-1 sm:px-2 md:px-4 lg:px-6 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                <button className=" sm:px-2 md:px-4 lg:px-6 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                   Register
                 </button>
               </Link>
