@@ -4,7 +4,7 @@ import appClient from "./appClient";
 export const getAllProducts = async () => {
   try {
     const response = await appClient.get("/products");
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(

@@ -14,7 +14,7 @@ const CardComponent = ({
       <div className=" text-gray-900 dark:text-gray-100 dark:bg-gray-900 p-4 rounded-lg shadow-lg w-80 border border-gray-300 dark:border-b-cyan-800-700 transition">
         {/* Image Container */}
         <div className="w-full h-40 flex items-center justify-center">
-          {console.log("imageUrl", imageUrl)}
+          {/* {console.log("imageUrl", imageUrl)} */}
           <img
             src={imageUrl || "https://via.placeholder.com/150"}
             alt={name}
