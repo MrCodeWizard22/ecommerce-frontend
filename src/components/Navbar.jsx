@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 // import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+  const cartItemCount = useSelector((state) => state.cart.items.length);
   // const { user, logout } = useContext(AuthContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -81,6 +82,7 @@ const Navbar = () => {
           >
             {darkMode ? "🌙" : "☀️"}
           </button>
+          <Link to="/cart">Cart ({cartItemCount})</Link>
           {email ? (
             <>
               <span className="text-gray-700 text-md md:text-sm dark:text-white">

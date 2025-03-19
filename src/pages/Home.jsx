@@ -13,8 +13,14 @@ const Home = () => {
   useEffect(() => {
     getAllProducts()
       .then((data) => {
-        setProducts(data);
-        setFilteredProducts(data);
+        if (Array.isArray(data)) {
+          setProducts(data);
+          setFilteredProducts(data);
+        } else {
+          console.error("Expected an array but received:", data);
+          setProducts([]);
+          setFilteredProducts([]);
+        }
       })
       .catch((error) => console.error("Failed to fetch products:", error));
 

@@ -1,16 +1,54 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
 import { getProductById } from "../api/productApi";
+import axios from "axios";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
+  const dispatch = useDispatch();
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     getProductById(id)
       .then((data) => setProduct(data))
       .catch((error) => console.error("Failed to fetch product:", error));
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const email = localStorage.getItem("email");
+        const response = await axios.get(
+          `http://localhost:8080/api/auth/id?email=${email}`,
+          {
+            // Send email as query parameter
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserId(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user ID:", error);
+      }
+    };
+
+    fetchUserId();
   }, []);
+
+  const handleAddToCart = () => {
+    if (userId) {
+      dispatch(
+        addToCart({ userId, productId: product.productId, quantity: 1 })
+      );
+    } else {
+      console.error("User ID not available.");
+    }
+  };
 
   return (
     <div className="container min-h-screen mx-auto p-6 dark:text-white dark:bg-gray-800">
@@ -41,6 +79,16 @@ const ProductDetails = () => {
               ? `In Stock: ${product.quantity}`
               : "Out of Stock"}
           </p>
+
+          {/* Add to Cart Button */}
+          {product.quantity > 0 && (
+            <button
+              onClick={handleAddToCart}
+              className="mt-4 px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 transition"
+            >
+              Add to Cart
+            </button>
+          )}
         </div>
       </div>
     </div>

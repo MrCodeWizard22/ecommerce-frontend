@@ -30,11 +30,14 @@ const Login = () => {
       if (response.status === 200) {
         console.log(response.data);
 
-        // Assuming response.data is an object like { token: "...", email: "..." }
         dispatch(
-          login({ token: response.data.token, email: response.data.email })
+          login({
+            token: response.data.token,
+            email: response.data.email,
+            userId: response.data.userId,
+          })
         );
-        navigate("/"); // This will redirect to the home page
+        navigate("/");
       }
     } catch (error) {
       alert("Login failed. mail and password do not match");
