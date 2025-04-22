@@ -50,6 +50,10 @@ function Cart() {
     return (
       <p className="text-center text-red-500">Error: {JSON.stringify(error)}</p>
     );
+  const totalPrice = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
 
   return (
     <div className="max-w-3xl mx-auto p-4 bg-white shadow-md rounded-lg">
@@ -68,6 +72,7 @@ function Cart() {
             </div>
             <div className="flex items-center space-x-2">
               <input
+                min={1}
                 type="number"
                 className="w-16 p-1 border rounded text-center"
                 value={
@@ -117,6 +122,9 @@ function Cart() {
             Add Product 1
           </button>
         )}
+      </div>
+      <div className="text-right text-lg font-semibold mt-4">
+        Total: ${totalPrice.toFixed(2)}
       </div>
     </div>
   );

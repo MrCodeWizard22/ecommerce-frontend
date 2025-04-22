@@ -54,8 +54,9 @@ const ProductDetails = () => {
     <div className="container min-h-screen mx-auto p-6 dark:text-white dark:bg-gray-800">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className="flex justify-center">
+          {/* {console.log("product", product.imageUrl)} */}
           <img
-            src={product.image || "https://via.placeholder.com/300"}
+            src={`http://localhost:8080/images/${product.imageUrl}`}
             alt={product.name}
             className="w-80 h-80 md:w-96 md:h-96 object-cover rounded-xl shadow-lg"
           />

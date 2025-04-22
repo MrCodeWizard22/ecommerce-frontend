@@ -139,6 +139,7 @@ const Register = () => {
               >
                 <option value="USER">User</option>
                 <option value="SELLER">Seller</option>
+                <option value="ADMIN">Admin</option>
               </select>
               <div className="flex items-start">
                 <div className="flex items-center h-5">

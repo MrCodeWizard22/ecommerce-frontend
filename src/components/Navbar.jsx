@@ -14,6 +14,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const email = useSelector((state) => state.auth.email);
+  const role = useSelector((state) => state.auth.role);
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -21,6 +22,9 @@ const Navbar = () => {
     } else {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
+    }
+    {
+      console.log(role);
     }
   }, [darkMode]);
 
@@ -82,7 +86,9 @@ const Navbar = () => {
           >
             {darkMode ? "🌙" : "☀️"}
           </button>
-          <Link to="/cart">Cart ({cartItemCount})</Link>
+          <Link to="/cart" className="dark:text-white text-black">
+            Cart ({cartItemCount})
+          </Link>
           {email ? (
             <>
               <span className="text-gray-700 text-md md:text-sm dark:text-white">

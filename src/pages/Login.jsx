@@ -33,10 +33,12 @@ const Login = () => {
         dispatch(
           login({
             token: response.data.token,
-            email: response.data.email,
+            email: response.data.username, // This should likely be email, not username
             userId: response.data.userId,
+            role: response.data.role,
           })
         );
+
         navigate("/");
       }
     } catch (error) {
