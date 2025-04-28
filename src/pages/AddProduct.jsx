@@ -10,6 +10,7 @@ const AddProduct = () => {
     quantity: "",
     categoryId: "",
     image: null,
+    sellerId: "",
   });
 
   const [categories, setCategories] = useState([]);
@@ -41,6 +42,10 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!product.sellerId) {
+      setMessage("Seller ID is required.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("name", product.name);
@@ -49,7 +54,18 @@ const AddProduct = () => {
     formData.append("quantity", product.quantity);
     formData.append("categoryId", product.categoryId);
     formData.append("image", product.image);
+    formData.append("sellerId", product.sellerId);
 
+    //clear the form after submission
+    setProduct({
+      name: "",
+      description: "",
+      price: "",
+      quantity: "",
+      categoryId: "",
+      image: null,
+      sellerId: "",
+    });
     try {
       await addProduct(formData);
       setMessage("Product added successfully!");
@@ -130,6 +146,16 @@ const AddProduct = () => {
           className="w-full p-2 border border-gray-400 dark:border-gray-600 dark:text-white rounded mb-2 bg-[var(--background-color)] text-[var(--text-color)]"
           required
         />
+        <input
+          type="number"
+          name="sellerId"
+          placeholder="Seller ID"
+          value={product.sellerId}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-400 dark:border-gray-600 dark:text-white rounded mb-2 bg-[var(--background-color)] text-[var(--text-color)]"
+          required
+        />
+
         <input
           type="file"
           required

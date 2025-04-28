@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems } from "./redux/cartSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
-import AdminDashboard from "./pages/AdminDashboard";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,14 +40,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/api/auth/register" element={<Register />} />
         <Route path="/api/auth/login" element={<Login />} />
       </Routes>

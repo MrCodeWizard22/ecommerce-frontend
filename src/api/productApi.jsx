@@ -4,7 +4,7 @@ import appClient from "./appClient";
 export const getAllProducts = async () => {
   try {
     const response = await appClient.get("/products");
-    // console.log(response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -43,6 +43,20 @@ export const addProduct = async (product) => {
   } catch (error) {
     console.error(
       "Error adding product:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const getProductsBySellerId = async (sellerId) => {
+  try {
+    const response = await appClient.get(`/products/seller/${sellerId}`);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching products by seller ID:",
       error.response?.data || error.message
     );
     throw error;
