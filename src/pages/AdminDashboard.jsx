@@ -1,5 +1,6 @@
 // src/pages/AdminDashboard.jsx
 import axios from "axios";
+import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 const AdminDashboard = () => {
@@ -10,6 +11,7 @@ const AdminDashboard = () => {
 
   const token = localStorage.getItem("token");
 
+  // fetch all product
   const fetchProducts = async () => {
     try {
       const response = await axios({
@@ -28,6 +30,7 @@ const AdminDashboard = () => {
       );
     }
   };
+  // all users
   const fetchUsers = async () => {
     console.log(token);
     if (!token) {
@@ -53,6 +56,7 @@ const AdminDashboard = () => {
       );
     }
   };
+  // seller
   const fetchSellers = async () => {
     try {
       const response = await axios({
@@ -71,6 +75,7 @@ const AdminDashboard = () => {
       );
     }
   };
+  // orders
   const fetchOrders = async () => {
     try {
       const response = await axios({
@@ -90,6 +95,7 @@ const AdminDashboard = () => {
       );
     }
   };
+
   useEffect(() => {
     fetchUsers();
     fetchOrders();
@@ -103,30 +109,36 @@ const AdminDashboard = () => {
       <aside className="w-64 dark:bg-[#2D3748] dark:text-[#A0AEC00] flex flex-col p-4 dark:border-r border-[#4A5568]">
         <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
         <nav className="flex flex-col space-y-4">
-          <a
-            href="#"
+          <Link
+            to={"#"}
             className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
           >
             Users
-          </a>
-          <a
-            href="#"
-            className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
-          >
-            Products
-          </a>
-          <a
-            href="#"
-            className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
-          >
-            Orders
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to={"#"}
             className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
           >
             Sellers
-          </a>
+          </Link>
+          <Link
+            to={"#"}
+            className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
+          >
+            Orders
+          </Link>
+          <Link
+            to={"#"}
+            className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
+          >
+            Products
+          </Link>
+          <Link
+            to="/admin/product-requests"
+            className="hover:bg-[#C77DFF] p-2 rounded active:text-[#E0E0E0] active:bg-[#A78BFA]"
+          >
+            Product Requests
+          </Link>
         </nav>
       </aside>
 

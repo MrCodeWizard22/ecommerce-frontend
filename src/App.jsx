@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems } from "./redux/cartSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
+import ProductRequests from "./pages/ProductRequests";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,12 +35,14 @@ function App() {
         <Route
           path="/addProduct"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SELLER"]}>
               {" "}
               <AddProduct />{" "}
             </ProtectedRoute>
           }
         />
+        <Route path="/admin/product-requests" element={<ProductRequests />} />
+
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/api/auth/register" element={<Register />} />
         <Route path="/api/auth/login" element={<Login />} />

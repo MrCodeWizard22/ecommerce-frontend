@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { addProduct } from "../api/productApi.jsx";
+import { requestProduct } from "../api/productApi.jsx";
 import { getAllCategories } from "../api/categoryService.jsx";
 
 const AddProduct = () => {
@@ -67,7 +67,7 @@ const AddProduct = () => {
       sellerId: "",
     });
     try {
-      await addProduct(formData);
+      await requestProduct(formData);
       setMessage("Product added successfully!");
       console.log("Product added successfully!");
     } catch (error) {

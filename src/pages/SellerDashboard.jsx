@@ -7,6 +7,7 @@ import { getProductsBySellerId } from "../api/productApi";
 // import OrderList from "./OrderList";
 // import RevenueStats from "./RevenueStats";
 // import { fetchSellerData } from "../../redux/actions/sellerActions";
+import DashboardCards from "../pages/SellerDashboardCards";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -28,32 +29,38 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const [activeTab, setActiveTab] = useState("Dashboard");
+
   return (
     <div className="flex">
-      <div className="w-64 bg-gray-800 text-white h-screen p-4">
-        <ul>
-          <li className="mb-4">Dashboard</li>
-          <li className="mb-4">Manage Products</li>
-          <li className="mb-4">Orders</li>
-          <li className="mb-4">Revenue</li>
+      {/* Sidebar */}
+      <div className="w-64 h-screen bg-gray-500 dark:bg-gray-800 dark:text-gray-100 p-4 border-r-2 border-gray-300 dark:border-gray-700">
+        <ul className="space-y-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+          {["Dashboard", "Manage Products", "Orders", "Revenue"].map((item) => (
+            <li
+              key={item}
+              onClick={() => setActiveTab(item)}
+              className={`px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200
+          ${
+            activeTab === item
+              ? "bg-gray-300 dark:bg-gray-700 font-semibold"
+              : "hover:bg-gray-200 dark:hover:bg-gray-700"
+          }`}
+            >
+              {item}
+            </li>
+          ))}
         </ul>
       </div>
-      <div className="flex-1 p-6">
-        <div className="flex flex-wrap gap-6">
-          {/* Stats Component */}
-          <div className="w-full sm:w-1/2 md:w-1/3">stats</div>
 
-          {/* Revenue Stats Component */}
-          <div className="w-full sm:w-1/2 md:w-1/3">Revenue</div>
-
-          {/* Product List */}
-          <div className="w-full">
-            Products {!loading ? products.length : "fuck you"}
-          </div>
-
-          {/* Order List */}
-          <div className="w-full">Orders</div>
-        </div>
+      {/* main  */}
+      <div className="h-screen w-full overflow-y-auto">
+        <DashboardCards
+          products={products}
+          orders={[]}
+          revenue={0}
+          stats={{}}
+        />
       </div>
     </div>
   );
