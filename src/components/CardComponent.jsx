@@ -28,7 +28,7 @@ const CardComponent = ({
           <p className="text-sm text-gray-600 dark:text-gray-300">
             {description}
           </p>
-          <p className="text-md font-bold text-blue-500 mt-2">${price}</p>
+          <p className="text-md font-bold text-blue-500 mt-2">₹{price}</p>
           <p
             className={`text-sm font-medium mt-2 ${
               quantity > 0 ? "text-green-600" : "text-red-500"

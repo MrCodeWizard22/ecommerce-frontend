@@ -124,7 +124,7 @@ function Cart() {
         )}
       </div>
       <div className="text-right text-lg font-semibold mt-4">
-        Total: ${totalPrice.toFixed(2)}
+        Total: ₹{totalPrice.toFixed(2)}
       </div>
     </div>
   );

@@ -69,7 +69,7 @@ const ProductDetails = () => {
             {product.description}
           </p>
           <p className="text-2xl font-semibold text-blue-600 mt-4">
-            ${product.price}
+            ₹{product.price}
           </p>
           <p
             className={`text-lg font-medium mt-3 ${
