@@ -33,7 +33,7 @@ const Login = () => {
         dispatch(
           login({
             token: response.data.token,
-            email: response.data.username, // This should likely be email, not username
+            email: response.data.username,
             userId: response.data.userId,
             role: response.data.role,
           })
@@ -52,7 +52,7 @@ const Login = () => {
       <div className="flex items-center justify-center h-screen dark:bg-gray-600">
         <form
           className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-80"
-          onSubmit={handleSubmit} // Use onSubmit instead of onClick
+          onSubmit={handleSubmit}
         >
           <h2 className="text-2xl font-semibold mb-4 dark:text-white">Login</h2>
           <div className="mb-4">
@@ -87,7 +87,7 @@ const Login = () => {
               value={formData.password}
             />
             <button
-              type="submit" // This will trigger the form submission
+              type="submit"
               className="w-full mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
             >
               Login

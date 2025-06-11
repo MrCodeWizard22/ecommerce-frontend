@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   fetchCartItems,
   addToCart,
@@ -8,7 +9,8 @@ import {
   clearCart,
 } from "../redux/cartSlice";
 
-function Cart() {
+const Cart = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.cart);
   const userId = useSelector((state) => state.auth.userId);
@@ -44,6 +46,11 @@ function Cart() {
     setQuantities({ ...quantities, [cartId]: quantity });
   };
 
+  const handlePlaceOrder = () => {
+    navigate("/checkout");
+    console.log("order placed");
+  };
+
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;
   if (error)
@@ -68,7 +75,7 @@ function Cart() {
           >
             <div>
               <p className="text-lg font-medium">{item.product.name}</p>
-              <p className="text-gray-600">Price: ${item.product.price}</p>
+              <p className="text-gray-600">Price: ₹{item.product.price}</p>
             </div>
             <div className="flex items-center space-x-2">
               <input
@@ -126,8 +133,17 @@ function Cart() {
       <div className="text-right text-lg font-semibold mt-4">
         Total: ₹{totalPrice.toFixed(2)}
       </div>
+      <div className="flex justify-center">
+        <button
+          className="bg-blue-600 hover:bg-blue-400 w-30 h-12 rounded-md text-white"
+          onClick={handlePlaceOrder}
+        >
+          {" "}
+          Place order
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default Cart;

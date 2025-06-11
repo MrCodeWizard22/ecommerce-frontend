@@ -4,12 +4,14 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import { getProductById } from "../api/productApi";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getProductById(id)
@@ -49,12 +51,19 @@ const ProductDetails = () => {
       console.error("User ID not available.");
     }
   };
+  const handleBuyNow = () => {
+    navigate("/payment", {
+      state: {
+        amount: product.price,
+      },
+    });
+    console.log("Buy Now clicked");
+  };
 
   return (
     <div className="container min-h-screen mx-auto p-6 dark:text-white dark:bg-gray-800">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className="flex justify-center">
-          {/* {console.log("product", product.imageUrl)} */}
           <img
             src={`http://localhost:8080/images/${product.imageUrl}`}
             alt={product.name}
@@ -81,13 +90,21 @@ const ProductDetails = () => {
               : "Out of Stock"}
           </p>
 
-          {/* Add to Cart Button */}
           {product.quantity > 0 && (
             <button
               onClick={handleAddToCart}
               className="mt-4 px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 transition"
             >
               Add to Cart
+            </button>
+          )}
+          {product.quantity > 0 && (
+            <button
+              onClick={handleBuyNow}
+              className="mt-4 bg-orange-500 text-white font-bold rounded-lg px-6 py-3 ml-5 shadow-md hover:bg-orange-600 transition"
+            >
+              {" "}
+              BuyNow
             </button>
           )}
         </div>

@@ -23,9 +23,6 @@ const Navbar = () => {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
-    {
-      console.log(role);
-    }
   }, [darkMode]);
 
   return (

@@ -13,7 +13,8 @@ import { fetchCartItems } from "./redux/cartSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import ProductRequests from "./pages/ProductRequests";
-
+import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
 function App() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.userId);
@@ -32,6 +33,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/payment" element={<Payment />} />
         <Route
           path="/addProduct"
           element={
