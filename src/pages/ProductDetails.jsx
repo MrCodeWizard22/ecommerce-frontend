@@ -55,9 +55,10 @@ const ProductDetails = () => {
     navigate("/payment", {
       state: {
         amount: product.price,
+        productId: product.productId,
+        quantity: 1,
       },
     });
-    console.log("Buy Now clicked");
   };
 
   return (

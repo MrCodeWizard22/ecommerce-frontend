@@ -51,6 +51,22 @@ const Cart = () => {
     console.log("order placed");
   };
 
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      return;
+    }
+
+    navigate("/payment", {
+      state: {
+        amount: totalPrice,
+        items: items.map((item) => ({
+          productId: item.product.productId,
+          quantity: item.quantity,
+        })),
+      },
+    });
+  };
+
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;
   if (error)
@@ -136,10 +152,9 @@ const Cart = () => {
       <div className="flex justify-center">
         <button
           className="bg-blue-600 hover:bg-blue-400 w-30 h-12 rounded-md text-white"
-          onClick={handlePlaceOrder}
+          onClick={handleCheckout}
         >
-          {" "}
-          Place order
+          Proceed to Payment
         </button>
       </div>
     </div>
