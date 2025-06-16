@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -75,72 +74,124 @@ const Register = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-800">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
+    <section className="min-h-screen w-full bg-gray-50 dark:bg-gray-800 py-12">
+      <div className="flex flex-col items-center justify-center px-6 mx-auto">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-6">
+            <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+              Create an Account
             </h1>
 
-            {error && <p className="text-red-500">{error}</p>}
-            {successMessage && (
-              <p className="text-green-500">{successMessage}</p>
+            {error && (
+              <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
+                {error}
+              </div>
             )}
 
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Your Name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-              />
-              <input
-                type="email"
-                name="email"
-                id="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="name@company.com"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="••••••••"
-                required
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="••••••••"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              <select
-                name="role"
-                id="role"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-                value={formData.role}
-                onChange={handleChange}
-              >
-                <option value="USER">User</option>
-                <option value="SELLER">Seller</option>
-                <option value="ADMIN">Admin</option>
-              </select>
+            {successMessage && (
+              <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800">
+                {successMessage}
+              </div>
+            )}
+
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="John Doe"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="name@example.com"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="••••••••"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="••••••••"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="role"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Account Type
+                </label>
+                <select
+                  name="role"
+                  id="role"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  required
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="USER">User</option>
+                  <option value="SELLER">Seller</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -148,7 +199,7 @@ const Register = () => {
                     aria-describedby="terms"
                     type="checkbox"
                     name="terms"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600"
                     required
                     checked={formData.terms}
                     onChange={handleChange}
@@ -161,7 +212,7 @@ const Register = () => {
                   >
                     I accept the{" "}
                     <a
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                       href="#"
                     >
                       Terms and Conditions
@@ -169,21 +220,23 @@ const Register = () => {
                   </label>
                 </div>
               </div>
-              <div className="flex items-center justify-between w-full">
-                <button
-                  type="submit"
-                  className="w-1/2 mx-auto h-7 text-black dark:text-white text-sm ring-0 hover:ring-2 hover:ring-gray-600 dark:hover:ring-gray-400 focus:ring-2 focus:ring-gray-700 dark:focus:ring-gray-500 transition bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
-                  disabled={loading}
-                >
-                  {loading ? "Registering..." : "Create an account"}
-                </button>
-              </div>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+
+              <button
+                type="submit"
+                className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                disabled={loading}
+              >
+                {loading ? "Creating Account..." : "Create Account"}
+              </button>
+
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                 Already have an account?{" "}
-                <Link to={"/api/auth/login"} className="text-primary-600">
+                <Link
+                  to="/api/auth/login"
+                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                >
                   Login here
                 </Link>
-                {/* </a> */}
               </p>
             </form>
           </div>

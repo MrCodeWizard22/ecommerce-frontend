@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import ProductRequests from "./pages/ProductRequests";
 import Checkout from "./pages/Checkout";
+import ShippingDetails from "./pages/ShippingDetails";
 import Payment from "./pages/Payment";
 function App() {
   const dispatch = useDispatch();
@@ -30,10 +31,12 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/shipping" element={<ShippingDetails />} />
         <Route path="/payment" element={<Payment />} />
         <Route
           path="/addProduct"
@@ -45,7 +48,6 @@ function App() {
           }
         />
         <Route path="/admin/product-requests" element={<ProductRequests />} />
-
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/api/auth/register" element={<Register />} />
         <Route path="/api/auth/login" element={<Login />} />

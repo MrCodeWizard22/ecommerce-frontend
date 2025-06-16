@@ -6,13 +6,24 @@ import { useSelector } from "react-redux";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { amount, productId, quantity, items } = location.state || {};
+  const { amount, productId, quantity, items, shippingInfo } =
+    location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState(null);
   const userId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
+    // Redirect if no shipping info
+    if (!shippingInfo && items && items.length > 0) {
+      navigate("/shipping", {
+        state: {
+          amount,
+          items,
+        },
+      });
+    }
+
     // Load Razorpay script
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -55,11 +66,12 @@ const Payment = () => {
 
       setOrderId(razorpayOrderId);
 
+      // Simple configuration focusing on card payments
       const options = {
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency || "INR",
-        name: "Ecommerce Store",
+        name: "Quanta Shop",
         description: "Purchase Payment",
         order_id: razorpayOrderId,
         handler: function (response) {
@@ -146,6 +158,19 @@ const Payment = () => {
           {productId && <p className="text-sm mt-2">Product ID: {productId}</p>}
           {quantity && <p className="text-sm">Quantity: {quantity}</p>}
           {items && <p className="text-sm">Items: {items.length}</p>}
+
+          {shippingInfo && (
+            <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
+              <p className="font-medium">Shipping to:</p>
+              <p className="text-sm">{shippingInfo.fullName}</p>
+              <p className="text-sm">{shippingInfo.address}</p>
+              <p className="text-sm">
+                {shippingInfo.city}, {shippingInfo.state} {shippingInfo.pincode}
+              </p>
+              <p className="text-sm">{shippingInfo.country}</p>
+              <p className="text-sm mt-1">Phone: {shippingInfo.phone}</p>
+            </div>
+          )}
         </div>
 
         {error && <div className="mb-4 text-red-500">{error}</div>}
@@ -157,16 +182,6 @@ const Payment = () => {
         >
           {loading ? "Processing..." : "Pay with Razorpay"}
         </button>
-
-        <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          <p>This is a test payment integration. For testing, you can use:</p>
-          <ul className="list-disc pl-5 mt-1">
-            <li>Card Number: 4111 1111 1111 1111</li>
-            <li>Expiry: Any future date</li>
-            <li>CVV: Any 3 digits</li>
-            <li>Name: Any name</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
