@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createOrder, verifyPayment } from "../api/paymentApi";
+import {
+  createOrder,
+  createOrderFromCart,
+  createOrderWithPayment,
+  verifyPayment,
+} from "../api/paymentApi";
 import { useSelector } from "react-redux";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { amount, productId, quantity, items, shippingInfo } =
+  const { amount, productId, quantity, items, shippingInfo, fromCheckout } =
     location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -49,16 +54,92 @@ const Payment = () => {
     try {
       const amountToSend = Math.round(amount);
       console.log("Sending amount to backend:", amountToSend);
+      console.log("Payment state:", {
+        amount,
+        productId,
+        quantity,
+        items,
+        shippingInfo,
+        fromCheckout,
+      });
 
-      // Create order
-      const orderData = await createOrder(amountToSend);
+      let orderData;
+
+      // Check if this is from cart checkout (fromCheckout = true)
+      if (fromCheckout && items && Array.isArray(items) && shippingInfo) {
+        // Create order from cart with shipping details
+        const orderRequest = {
+          userId: userId,
+          shippingAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pincode}`,
+          paymentMethod: "Razorpay",
+          shippingDetails: {
+            fullName: shippingInfo.fullName,
+            email: shippingInfo.email,
+            phone: shippingInfo.phone,
+            addressLine1: shippingInfo.address,
+            city: shippingInfo.city,
+            state: shippingInfo.state,
+            pincode: shippingInfo.pincode,
+            country: shippingInfo.country,
+            shippingMethod: shippingInfo.shippingMethod,
+            deliveryInstructions: shippingInfo.deliveryInstructions,
+          },
+        };
+
+        orderData = await createOrderFromCart(orderRequest);
+      } else if (items && Array.isArray(items) && shippingInfo && productId) {
+        // Create order for direct purchase (Buy Now) with shipping details
+        const orderRequest = {
+          userId: userId,
+          shippingAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pincode}`,
+          paymentMethod: "Razorpay",
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: 0, // Will be fetched from product
+          })),
+          shippingDetails: {
+            fullName: shippingInfo.fullName,
+            email: shippingInfo.email,
+            phone: shippingInfo.phone,
+            addressLine1: shippingInfo.address,
+            city: shippingInfo.city,
+            state: shippingInfo.state,
+            pincode: shippingInfo.pincode,
+            country: shippingInfo.country,
+            shippingMethod: shippingInfo.shippingMethod,
+            deliveryInstructions: shippingInfo.deliveryInstructions,
+          },
+        };
+
+        orderData = await createOrderWithPayment(orderRequest);
+      } else {
+        // Create simple Razorpay order for basic payment
+        orderData = await createOrder(amountToSend);
+      }
+
       console.log("Order data received:", orderData);
 
       if (!orderData) {
         throw new Error("No order data received");
       }
 
-      const razorpayOrderId = orderData.orderId;
+      // Handle different response formats
+      let razorpayOrderId, keyId, razorpayAmount, currency;
+
+      if (orderData.razorpayOrder) {
+        // Response from createOrderWithPayment or createOrderFromCart
+        razorpayOrderId = orderData.razorpayOrder.orderId;
+        keyId = orderData.razorpayOrder.keyId;
+        razorpayAmount = orderData.razorpayOrder.amount;
+        currency = orderData.razorpayOrder.currency;
+      } else {
+        // Response from simple createOrder
+        razorpayOrderId = orderData.orderId;
+        keyId = orderData.keyId;
+        razorpayAmount = orderData.amount;
+        currency = orderData.currency;
+      }
 
       if (!razorpayOrderId) {
         throw new Error("No order ID in response");
@@ -68,9 +149,9 @@ const Payment = () => {
 
       // Simple configuration focusing on card payments
       const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency || "INR",
+        key: keyId,
+        amount: razorpayAmount,
+        currency: currency || "INR",
         name: "Quanta Shop",
         description: "Purchase Payment",
         order_id: razorpayOrderId,
@@ -91,6 +172,14 @@ const Payment = () => {
       };
 
       console.log("Razorpay options:", options);
+
+      // Check if Razorpay is loaded
+      if (!window.Razorpay) {
+        throw new Error(
+          "Razorpay SDK not loaded. Please refresh the page and try again."
+        );
+      }
+
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {

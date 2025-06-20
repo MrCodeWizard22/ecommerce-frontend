@@ -16,6 +16,44 @@ export const createOrder = async (amount) => {
   }
 };
 
+// Create order from cart with shipping details
+export const createOrderFromCart = async (orderData) => {
+  try {
+    console.log("Creating order from cart:", orderData);
+    const response = await appClient.post(
+      "/payments/create-order-from-cart",
+      orderData
+    );
+    console.log("Order from cart response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating order from cart:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+// Create order with payment integration
+export const createOrderWithPayment = async (orderRequest) => {
+  try {
+    console.log("Creating order with payment:", orderRequest);
+    const response = await appClient.post(
+      "/payments/create-order-with-payment",
+      orderRequest
+    );
+    console.log("Order with payment response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating order with payment:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 // Verify Razorpay payment
 export const verifyPayment = async (paymentData) => {
   try {

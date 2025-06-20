@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -22,9 +22,54 @@ const ShippingDetails = () => {
     state: "",
     pincode: "",
     country: "India",
+    deliveryInstructions: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [shippingMethods, setShippingMethods] = useState([]);
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
+  const [shippingCost, setShippingCost] = useState(0);
+  const [estimatedDelivery, setEstimatedDelivery] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [calculatingShipping, setCalculatingShipping] = useState(false);
+
+  // Load shipping methods on component mount
+  useEffect(() => {
+    // Set simple shipping methods
+    const methods = [
+      {
+        name: "STANDARD",
+        displayName: "Standard Delivery",
+        cost: 50.0,
+        minDeliveryDays: 5,
+        maxDeliveryDays: 7,
+      },
+      {
+        name: "EXPRESS",
+        displayName: "Express Delivery",
+        cost: 100.0,
+        minDeliveryDays: 2,
+        maxDeliveryDays: 3,
+      },
+      {
+        name: "FREE",
+        displayName: "Free Delivery",
+        cost: 0.0,
+        minDeliveryDays: 7,
+        maxDeliveryDays: 10,
+      },
+    ];
+
+    setShippingMethods(methods);
+    setSelectedShippingMethod(methods[0].displayName);
+  }, []);
+
+  // Calculate shipping cost when method changes
+  useEffect(() => {
+    if (selectedShippingMethod && amount) {
+      calculateShipping();
+    }
+  }, [selectedShippingMethod, amount]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +77,39 @@ const ShippingDetails = () => {
       ...shippingInfo,
       [name]: value,
     });
+  };
+
+  const handleShippingMethodChange = (e) => {
+    setSelectedShippingMethod(e.target.value);
+  };
+
+  const calculateShipping = () => {
+    if (!selectedShippingMethod || !amount) return;
+
+    setCalculatingShipping(true);
+
+    // Find the selected method
+    const method = shippingMethods.find(
+      (m) => m.displayName === selectedShippingMethod
+    );
+    if (method) {
+      let cost = method.cost;
+
+      // Free shipping for orders above ₹500 with Standard delivery
+      if (amount >= 500 && method.name === "STANDARD") {
+        cost = 0;
+      }
+
+      setShippingCost(cost);
+
+      // Calculate estimated delivery
+      const deliveryDays = method.maxDeliveryDays;
+      const estimatedDate = new Date();
+      estimatedDate.setDate(estimatedDate.getDate() + deliveryDays);
+      setEstimatedDelivery(estimatedDate.toISOString());
+    }
+
+    setCalculatingShipping(false);
   };
 
   const validate = () => {
@@ -81,10 +159,16 @@ const ShippingDetails = () => {
 
     navigate("/payment", {
       state: {
-        amount,
+        amount: amount + shippingCost,
         items,
         productId,
-        shippingInfo,
+        fromCheckout,
+        shippingInfo: {
+          ...shippingInfo,
+          shippingMethod: selectedShippingMethod,
+          shippingCost,
+          estimatedDelivery,
+        },
       },
     });
   };
@@ -241,14 +325,113 @@ const ShippingDetails = () => {
               </div>
             </div>
 
+            {/* Shipping Method Selection */}
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-4 dark:text-white">
+                Shipping Method
+              </h3>
+              <div className="space-y-3">
+                {shippingMethods.map((method) => (
+                  <div
+                    key={method.name}
+                    className="flex items-center justify-between p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id={method.name}
+                        name="shippingMethod"
+                        value={method.displayName}
+                        checked={selectedShippingMethod === method.displayName}
+                        onChange={handleShippingMethodChange}
+                        className="mr-3"
+                      />
+                      <label htmlFor={method.name} className="dark:text-white">
+                        <div className="font-medium">{method.displayName}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          {method.minDeliveryDays === method.maxDeliveryDays
+                            ? `${method.minDeliveryDays} day${
+                                method.minDeliveryDays > 1 ? "s" : ""
+                              }`
+                            : `${method.minDeliveryDays}-${method.maxDeliveryDays} days`}
+                        </div>
+                      </label>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-medium dark:text-white">
+                        {method.cost === 0 ? "Free" : `₹${method.cost}`}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {calculatingShipping && (
+                <div className="mt-2 text-blue-600 dark:text-blue-400">
+                  Calculating shipping cost...
+                </div>
+              )}
+
+              {shippingCost > 0 && !calculatingShipping && (
+                <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                  <div className="text-blue-800 dark:text-blue-200">
+                    Shipping Cost: ₹{shippingCost}
+                  </div>
+                  {estimatedDelivery && (
+                    <div className="text-sm text-blue-600 dark:text-blue-300">
+                      Estimated Delivery:{" "}
+                      {new Date(estimatedDelivery).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Delivery Instructions */}
+            <div className="mt-6">
+              <label className="block text-gray-700 dark:text-gray-300 mb-2">
+                Delivery Instructions (Optional)
+              </label>
+              <textarea
+                name="deliveryInstructions"
+                value={shippingInfo.deliveryInstructions}
+                onChange={handleChange}
+                rows="3"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                placeholder="Any special delivery instructions..."
+              />
+            </div>
+
             <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <h2 className="text-xl font-semibold mb-4 dark:text-white">
                 Order Summary
               </h2>
-              <p className="text-lg text-blue-600 dark:text-blue-400">
-                Total Amount: ₹{amount}
-              </p>
-              <p className="text-gray-700 dark:text-gray-300">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">
+                    Subtotal:
+                  </span>
+                  <span className="text-gray-900 dark:text-white">
+                    ₹{amount}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">
+                    Shipping:
+                  </span>
+                  <span className="text-gray-900 dark:text-white">
+                    {shippingCost === 0 ? "Free" : `₹${shippingCost}`}
+                  </span>
+                </div>
+                <hr className="border-gray-300 dark:border-gray-600" />
+                <div className="flex justify-between text-lg font-semibold">
+                  <span className="text-gray-900 dark:text-white">Total:</span>
+                  <span className="text-blue-600 dark:text-blue-400">
+                    ₹{amount + shippingCost}
+                  </span>
+                </div>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 mt-2">
                 {productId && !Array.isArray(items)
                   ? "Direct Purchase"
                   : `Items: ${items?.length || 0}`}

@@ -16,6 +16,7 @@ import {
   Save,
   X,
 } from "lucide-react";
+import { getUserOrders } from "../api/orderApi";
 
 const UserDashboard = ({ id }) => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const UserDashboard = ({ id }) => {
     country: "",
   });
 
-  // Orders state (mock data for now)
+  // Orders state
   const [orders, setOrders] = useState([]);
 
   // Wishlist state (mock data for now)
@@ -70,38 +71,45 @@ const UserDashboard = ({ id }) => {
         setUserProfile({
           name: email?.split("@")[0] || "User",
           email: email || "",
-          phone: "+1 (555) 123-4567",
-          address: "123 Main Street",
-          city: "New York",
-          state: "NY",
-          zipCode: "10001",
-          country: "United States",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          zipCode: "",
+          country: "India",
         });
 
-        // Mock orders data - replace with actual API call
-        setOrders([
-          {
-            id: "ORD-001",
-            date: "2024-06-10",
-            status: "Delivered",
-            total: 1299,
-            items: [{ name: "Wireless Headphones", quantity: 1, price: 1299 }],
-          },
-          {
-            id: "ORD-002",
-            date: "2024-06-08",
-            status: "Processing",
-            total: 2499,
-            items: [{ name: "Smartphone", quantity: 1, price: 2499 }],
-          },
-          {
-            id: "ORD-003",
-            date: "2024-06-05",
-            status: "Shipped",
-            total: 999,
-            items: [{ name: "Bluetooth Speaker", quantity: 1, price: 999 }],
-          },
-        ]);
+        try {
+          const ordersResponse = await getUserOrders(userId);
+          console.log("Orders response:", ordersResponse);
+
+          if (ordersResponse && ordersResponse.orders) {
+            const transformedOrders = ordersResponse.orders.map((order) => ({
+              id: order.orderId,
+              date: order.orderDate,
+              status: getOrderStatusText(order.orderStatus),
+              total: order.orderTotal,
+              items: order.orderItems
+                ? order.orderItems.map((item) => ({
+                    name: item.product?.productName || "Product",
+                    quantity: item.quantity,
+                    price: item.price,
+                  }))
+                : [],
+              trackingNumber: order.trackingNumber,
+              shippingAddress: order.shippingAddress,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: order.paymentStatus,
+            }));
+
+            setOrders(transformedOrders);
+          } else {
+            setOrders([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch orders:", error);
+          setOrders([]);
+        }
 
         // Mock wishlist data - replace with actual API call
         setWishlist([]);
@@ -117,6 +125,25 @@ const UserDashboard = ({ id }) => {
   }, [userId, email]);
 
   // Helper functions
+  const getOrderStatusText = (statusCode) => {
+    switch (statusCode) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Confirmed";
+      case 2:
+        return "Processing";
+      case 3:
+        return "Shipped";
+      case 4:
+        return "Delivered";
+      case 5:
+        return "Cancelled";
+      default:
+        return "Unknown";
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "delivered":
@@ -127,6 +154,10 @@ const UserDashboard = ({ id }) => {
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
       case "cancelled":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
+      case "confirmed":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+      case "pending":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
@@ -142,6 +173,10 @@ const UserDashboard = ({ id }) => {
         return <Package size={16} className="text-yellow-600" />;
       case "cancelled":
         return <XCircle size={16} className="text-red-600" />;
+      case "confirmed":
+        return <CheckCircle size={16} className="text-green-600" />;
+      case "pending":
+        return <Clock size={16} className="text-orange-600" />;
       default:
         return <Clock size={16} className="text-gray-600" />;
     }
