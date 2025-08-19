@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getProductsBySellerId } from "../api/productApi";
+import { getSellerOrders } from "../api/orderApi";
 import {
   Package,
   ShoppingBag,
@@ -10,6 +11,7 @@ import {
   Users,
   TrendingUp,
   AlertCircle,
+  CheckCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -49,13 +51,35 @@ const SellerDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [searchTerm, setSearchTerm] = useState("");
-  const [stats] = useState({
-    views: 12345,
-    revenue: 56789,
-    pendingOrders: 5,
-    completedOrders: 28,
-    lowStockItems: 3,
+  const [stats, setStats] = useState({
+    views: 0,
+    revenue: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+    lowStockItems: 0,
+    outOfStockItems: 0,
+    lowStockOnlyItems: 0,
   });
+
+  // Helper function to convert order status codes to text
+  const getOrderStatusText = (statusCode) => {
+    switch (statusCode) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Confirmed";
+      case 2:
+        return "Processing";
+      case 3:
+        return "Shipped";
+      case 4:
+        return "Delivered";
+      case 5:
+        return "Cancelled";
+      default:
+        return "Unknown";
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,49 +101,71 @@ const SellerDashboard = () => {
           setProducts([]);
         }
 
-        // Mock orders data - replace with actual API call
-        setOrders([
-          {
-            id: 1,
-            customer: "John Doe",
-            product: "Product 1",
-            amount: 1299,
-            status: "Delivered",
-            date: "2023-06-15",
-          },
-          {
-            id: 2,
-            customer: "Jane Smith",
-            product: "Product 2",
-            amount: 2499,
-            status: "Processing",
-            date: "2023-06-18",
-          },
-          {
-            id: 3,
-            customer: "Bob Johnson",
-            product: "Product 3",
-            amount: 999,
-            status: "Pending",
-            date: "2023-06-20",
-          },
-          {
-            id: 4,
-            customer: "Alice Brown",
-            product: "Product 4",
-            amount: 1899,
-            status: "Delivered",
-            date: "2023-06-12",
-          },
-          {
-            id: 5,
-            customer: "Charlie Wilson",
-            product: "Product 5",
-            amount: 3499,
-            status: "Processing",
-            date: "2023-06-19",
-          },
-        ]);
+        // Fetch real seller orders
+        try {
+          const ordersResponse = await getSellerOrders(userId);
+          // console.log("Seller orders response:", ordersResponse);
+
+          if (ordersResponse && ordersResponse.orders) {
+            const transformedOrders = ordersResponse.orders.map((order) => {
+              let customerName = "Unknown Customer";
+
+              if (order.user?.name) {
+                customerName = order.user.name;
+              } else if (order.user?.email) {
+                customerName = order.user.email;
+              }
+              // Fallback to shipping details (which is available in your case)
+              else if (order.shippingDetails?.fullName) {
+                customerName = order.shippingDetails.fullName;
+              } else if (order.shippingDetails?.email) {
+                customerName = order.shippingDetails.email;
+              }
+
+              return {
+                id: order.orderId,
+                customer: customerName,
+                product:
+                  order.orderItems
+                    ?.map((item) => item.product?.productName)
+                    .join(", ") || "Products",
+                amount: order.orderTotal,
+                status: getOrderStatusText(order.orderStatus),
+                date: new Date(order.orderDate).toLocaleDateString(),
+                orderItems: order.orderItems || [],
+                originalOrder: order,
+              };
+            });
+
+            setOrders(transformedOrders);
+
+            // Calculate real stats from orders
+            const totalRevenue = transformedOrders.reduce(
+              (sum, order) => sum + order.amount,
+              0
+            );
+            const pendingOrders = transformedOrders.filter(
+              (order) => order.status === "Pending"
+            ).length;
+            const completedOrders = transformedOrders.filter(
+              (order) => order.status === "Delivered"
+            ).length;
+
+            setStats((prevStats) => ({
+              ...prevStats,
+              revenue: totalRevenue,
+              pendingOrders,
+              completedOrders,
+            }));
+          } else {
+            setOrders([]);
+          }
+        } catch (orderError) {
+          console.error("Failed to fetch seller orders:", orderError);
+          setOrders([]);
+        }
+
+        // Stock calculations will be handled in a separate useEffect
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setError("Failed to load dashboard data. Please try again.");
@@ -130,6 +176,26 @@ const SellerDashboard = () => {
 
     fetchData();
   }, [userId]);
+
+  // Separate useEffect to calculate stock statistics when products change
+  useEffect(() => {
+    if (products.length > 0) {
+      const outOfStockCount = products.filter(
+        (product) => product.quantity === 0
+      ).length;
+      const lowStockCount = products.filter(
+        (product) => product.quantity > 0 && product.quantity < 10
+      ).length;
+      const totalStockIssues = outOfStockCount + lowStockCount;
+
+      setStats((prevStats) => ({
+        ...prevStats,
+        lowStockItems: totalStockIssues,
+        outOfStockItems: outOfStockCount,
+        lowStockOnlyItems: lowStockCount,
+      }));
+    }
+  }, [products]); // This will run whenever products array changes
 
   const menuItems = [
     { name: "Dashboard", icon: <BarChart2 size={20} /> },
@@ -316,18 +382,105 @@ const SellerDashboard = () => {
                 </div>
 
                 <div className="p-6 space-y-4">
-                  <div className="flex items-start space-x-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                    <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
-                        Low Stock Alert
-                      </h4>
-                      <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                        {stats.lowStockItems} products are running low on
-                        inventory
-                      </p>
+                  {/* Out of Stock Alert - Highest Priority */}
+                  {stats.outOfStockItems > 0 && (
+                    <div className="flex items-start space-x-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                      <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-red-800 dark:text-red-300">
+                          🚨 Out of Stock Alert
+                        </h4>
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                          {stats.outOfStockItems} products are completely out of
+                          stock
+                        </p>
+                        <div className="mt-2 space-y-1">
+                          {products
+                            .filter((product) => product.quantity === 0)
+                            .slice(0, 3)
+                            .map((product) => (
+                              <div
+                                key={product.productId}
+                                className="text-xs text-red-700 dark:text-red-300 font-medium"
+                              >
+                                • {product.name}: OUT OF STOCK
+                              </div>
+                            ))}
+                          {products.filter((product) => product.quantity === 0)
+                            .length > 3 && (
+                            <div className="text-xs text-red-600 dark:text-red-400">
+                              ...and{" "}
+                              {products.filter(
+                                (product) => product.quantity === 0
+                              ).length - 3}{" "}
+                              more out of stock
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Low Stock Alert - Medium Priority */}
+                  {stats.lowStockOnlyItems > 0 && (
+                    <div className="flex items-start space-x-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                      <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                          ⚠️ Low Stock Warning
+                        </h4>
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                          {stats.lowStockOnlyItems} products have less than 10
+                          items in stock
+                        </p>
+                        <div className="mt-2 space-y-1">
+                          {products
+                            .filter(
+                              (product) =>
+                                product.quantity > 0 && product.quantity < 10
+                            )
+                            .slice(0, 3)
+                            .map((product) => (
+                              <div
+                                key={product.productId}
+                                className="text-xs text-yellow-700 dark:text-yellow-300"
+                              >
+                                • {product.name}: {product.quantity} left
+                              </div>
+                            ))}
+                          {products.filter(
+                            (product) =>
+                              product.quantity > 0 && product.quantity < 10
+                          ).length > 3 && (
+                            <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                              ...and{" "}
+                              {products.filter(
+                                (product) =>
+                                  product.quantity > 0 && product.quantity < 10
+                              ).length - 3}{" "}
+                              more low stock items
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* All Good - Only show if no stock issues */}
+                  {stats.outOfStockItems === 0 &&
+                    stats.lowStockOnlyItems === 0 && (
+                      <div className="flex items-start space-x-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                        <div>
+                          <h4 className="text-sm font-medium text-green-800 dark:text-green-300">
+                            ✅ Stock Levels Good
+                          </h4>
+                          <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                            All products have adequate stock levels
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
                   <div className="flex items-start space-x-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <ShoppingBag className="h-5 w-5 text-blue-500 mt-0.5" />

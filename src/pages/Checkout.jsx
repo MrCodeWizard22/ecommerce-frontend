@@ -32,7 +32,7 @@ const Checkout = () => {
           productId: item.product.productId,
           quantity: item.quantity,
         })),
-        fromCheckout: true, // Explicitly mark as coming from checkout
+        fromCheckout: true,
       },
     });
   };
@@ -54,7 +54,7 @@ const Checkout = () => {
   );
 
   const displayPrice = (price) => {
-    return price > 1000 ? (price / 100).toFixed(2) : price.toFixed(2);
+    return price;
   };
 
   return (

@@ -6,16 +6,19 @@ import {
   createOrderWithPayment,
   verifyPayment,
 } from "../api/paymentApi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCart } from "../redux/cartSlice";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { amount, productId, quantity, items, shippingInfo, fromCheckout } =
     location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState(null);
+  const [pendingOrderData, setPendingOrderData] = useState(null); // Store order data until payment success
   const userId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
@@ -41,6 +44,12 @@ const Payment = () => {
       }
     };
   }, []);
+
+  const handleBack = () => {
+    // Clear pending order data when going back
+    setPendingOrderData(null);
+    navigate(-1);
+  };
 
   const handlePayment = async () => {
     if (!amount) {
@@ -72,6 +81,7 @@ const Payment = () => {
           userId: userId,
           shippingAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pincode}`,
           paymentMethod: "Razorpay",
+          shippingCost: shippingInfo.shippingCost || 0,
           shippingDetails: {
             fullName: shippingInfo.fullName,
             email: shippingInfo.email,
@@ -83,16 +93,21 @@ const Payment = () => {
             country: shippingInfo.country,
             shippingMethod: shippingInfo.shippingMethod,
             deliveryInstructions: shippingInfo.deliveryInstructions,
+            shippingCost: shippingInfo.shippingCost || 0,
+            estimatedDelivery: shippingInfo.estimatedDelivery,
           },
         };
 
         orderData = await createOrderFromCart(orderRequest);
+        // Store that this was a cart order for later cart clearing
+        setPendingOrderData({ type: "cart" });
       } else if (items && Array.isArray(items) && shippingInfo && productId) {
         // Create order for direct purchase (Buy Now) with shipping details
         const orderRequest = {
           userId: userId,
           shippingAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pincode}`,
           paymentMethod: "Razorpay",
+          shippingCost: shippingInfo.shippingCost || 0,
           items: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -109,13 +124,17 @@ const Payment = () => {
             country: shippingInfo.country,
             shippingMethod: shippingInfo.shippingMethod,
             deliveryInstructions: shippingInfo.deliveryInstructions,
+            shippingCost: shippingInfo.shippingCost || 0,
+            estimatedDelivery: shippingInfo.estimatedDelivery,
           },
         };
 
         orderData = await createOrderWithPayment(orderRequest);
+        setPendingOrderData({ type: "direct" });
       } else {
         // Create simple Razorpay order for basic payment
         orderData = await createOrder(amountToSend);
+        setPendingOrderData(null);
       }
 
       console.log("Order data received:", orderData);
@@ -211,8 +230,17 @@ const Payment = () => {
         console.log("Verification result:", result);
 
         if (result && result.status === "success") {
-          // Payment successful
-          alert("Payment successful!");
+          // Payment verified successfully
+          console.log("Payment verified successfully!");
+
+          // Clear cart from frontend state if this was a cart checkout
+          if (pendingOrderData && pendingOrderData.type === "cart") {
+            console.log("Clearing cart from frontend state for user:", userId);
+            dispatch(clearCart(userId));
+          }
+
+          alert("Payment successful! Your order has been placed.");
+
           setTimeout(() => {
             navigate("/");
           }, 3000);
@@ -243,34 +271,67 @@ const Payment = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Payment Details</h2>
 
         <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-          <p className="text-lg font-semibold">Amount: ₹{amount}</p>
+          <p className="text-lg font-semibold">Total Amount: ₹{amount}</p>
           {productId && <p className="text-sm mt-2">Product ID: {productId}</p>}
           {quantity && <p className="text-sm">Quantity: {quantity}</p>}
           {items && <p className="text-sm">Items: {items.length}</p>}
 
           {shippingInfo && (
             <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-              <p className="font-medium">Shipping to:</p>
-              <p className="text-sm">{shippingInfo.fullName}</p>
-              <p className="text-sm">{shippingInfo.address}</p>
-              <p className="text-sm">
-                {shippingInfo.city}, {shippingInfo.state} {shippingInfo.pincode}
-              </p>
-              <p className="text-sm">{shippingInfo.country}</p>
-              <p className="text-sm mt-1">Phone: {shippingInfo.phone}</p>
+              <p className="font-medium">Order Breakdown:</p>
+              <div className="text-sm mt-2 space-y-1">
+                <div className="flex justify-between">
+                  <span>Subtotal:</span>
+                  <span>₹{amount - (shippingInfo.shippingCost || 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping ({shippingInfo.shippingMethod}):</span>
+                  <span>
+                    {shippingInfo.shippingCost === 0
+                      ? "Free"
+                      : `₹${shippingInfo.shippingCost}`}
+                  </span>
+                </div>
+                <div className="flex justify-between font-semibold border-t pt-1">
+                  <span>Total:</span>
+                  <span>₹{amount}</span>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
+                <p className="font-medium">Shipping to:</p>
+                <p className="text-sm">{shippingInfo.fullName}</p>
+                <p className="text-sm">{shippingInfo.address}</p>
+                <p className="text-sm">
+                  {shippingInfo.city}, {shippingInfo.state}{" "}
+                  {shippingInfo.pincode}
+                </p>
+                <p className="text-sm">{shippingInfo.country}</p>
+                <p className="text-sm mt-1">Phone: {shippingInfo.phone}</p>
+              </div>
             </div>
           )}
         </div>
 
         {error && <div className="mb-4 text-red-500">{error}</div>}
 
-        <button
-          onClick={handlePayment}
-          disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
-        >
-          {loading ? "Processing..." : "Pay with Razorpay"}
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handlePayment}
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+          >
+            {loading ? "Processing..." : "Pay with Razorpay"}
+          </button>
+
+          <button
+            onClick={handleBack}
+            disabled={loading}
+            className="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+          >
+            Back
+          </button>
+        </div>
       </div>
     </div>
   );

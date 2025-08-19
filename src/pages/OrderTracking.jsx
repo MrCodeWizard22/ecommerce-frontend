@@ -10,6 +10,26 @@ const OrderTracking = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Helper function to convert order status codes to text
+  const getOrderStatusText = (statusCode) => {
+    switch (statusCode) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Confirmed";
+      case 2:
+        return "Processing";
+      case 3:
+        return "Shipped";
+      case 4:
+        return "Delivered";
+      case 5:
+        return "Cancelled";
+      default:
+        return "Unknown";
+    }
+  };
+
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -144,10 +164,10 @@ const OrderTracking = () => {
                 </span>
                 <span
                   className={`px-2 py-1 rounded-full text-sm ${getStatusColor(
-                    order?.orderStatus?.description
+                    getOrderStatusText(order?.orderStatus)
                   )}`}
                 >
-                  {order?.orderStatus?.description || "Unknown"}
+                  {getOrderStatusText(order?.orderStatus)}
                 </span>
               </div>
 
