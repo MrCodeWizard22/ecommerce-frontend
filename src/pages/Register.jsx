@@ -44,7 +44,8 @@ const Register = () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/auth/register",
-        formData
+        formData,
+        { headers: { "Content-Type": "application/json" } }
       );
 
       if (response.status === 200) {
@@ -188,7 +189,6 @@ const Register = () => {
                 >
                   <option value="USER">User</option>
                   <option value="SELLER">Seller</option>
-                  <option value="ADMIN">Admin</option>
                 </select>
               </div>
 

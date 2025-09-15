@@ -99,7 +99,6 @@ const AdminDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
-
       setUsers(usersRes.data);
       setOrders(ordersRes.data);
       setProducts(productsRes.data);
@@ -160,8 +159,7 @@ const AdminDashboard = () => {
 
   // Product CRUD functions
   const handleAddProduct = () => {
-    setEditingProduct(null);
-    setShowProductModal(true);
+    navigate("/addProduct");
   };
 
   const handleEditProduct = (product) => {
