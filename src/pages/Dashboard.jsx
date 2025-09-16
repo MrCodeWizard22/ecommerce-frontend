@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import AdminDashboard from "./AdminDashboard";
-import SellerDashboard from "./SellerDashboard";
+import AdminDashboard from "../features/AdminDashboard/AdminDashboard";
+import SellerDashboard from "../features/SellerDashboard/SellerDashboard";
 import { UserDashboard } from "../features/UserDashboard/UserDashboard";
 const Dashboard = () => {
   const { role, userId } = useSelector((state) => state.auth);
