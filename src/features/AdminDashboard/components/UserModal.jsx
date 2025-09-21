@@ -107,7 +107,6 @@ const UserModal = ({ user, onClose, onSave, token }) => {
             >
               <option value="USER">User</option>
               <option value="SELLER">Seller</option>
-              <option value="ADMIN">Admin</option>
             </select>
           </div>
           <div>

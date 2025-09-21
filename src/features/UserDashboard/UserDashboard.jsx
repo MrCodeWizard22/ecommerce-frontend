@@ -16,8 +16,6 @@ export const UserDashboard = () => {
     error,
     userProfile,
     setUserProfile,
-    isEditing,
-    setIsEditing,
     orders,
     wishlist,
     setWishlist,
@@ -32,8 +30,6 @@ export const UserDashboard = () => {
           <ProfileTab
             userProfile={userProfile}
             setUserProfile={setUserProfile}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
           />
         );
       case "Orders":

@@ -1,11 +1,6 @@
 import React from "react";
 
-const UsersTable = ({
-  users,
-  handleAddUser,
-  handleEditUser,
-  handleDeleteUser,
-}) => {
+const UsersTable = ({ users, handleEditUser, handleDeleteUser }) => {
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -13,12 +8,6 @@ const UsersTable = ({
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             Users Management ({users.length} users)
           </h3>
-          <button
-            onClick={handleAddUser}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
-          >
-            Add User
-          </button>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

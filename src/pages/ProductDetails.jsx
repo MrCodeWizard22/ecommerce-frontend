@@ -18,6 +18,7 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.userId);
+  const role = useSelector((state) => state.auth.role);
 
   useEffect(() => {
     if (id) {
@@ -144,7 +145,7 @@ const ProductDetails = () => {
             )}
 
             <div className="flex flex-wrap gap-4 mt-4">
-              {product.quantity > 0 && (
+              {product.quantity > 0 && role == "USER" && (
                 <button
                   onClick={handleAddToCart}
                   className="px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600"
@@ -153,7 +154,7 @@ const ProductDetails = () => {
                 </button>
               )}
 
-              {product.quantity > 0 && (
+              {product.quantity > 0 && role == "USER" && (
                 <button
                   onClick={handleBuyNow}
                   className="px-6 py-3 bg-orange-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-600"

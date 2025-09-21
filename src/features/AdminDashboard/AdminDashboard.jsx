@@ -8,7 +8,6 @@ import {
   Store,
   BarChart2,
   Settings,
-  LogOut,
   Bell,
 } from "lucide-react";
 
@@ -407,19 +406,6 @@ const AdminDashboard = () => {
             ))}
           </ul>
         </nav>
-
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/api/auth/login");
-            }}
-            className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400"
-          >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
       </aside>
 
       {/* Main Content */}
