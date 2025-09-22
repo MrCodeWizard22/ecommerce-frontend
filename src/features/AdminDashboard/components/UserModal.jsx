@@ -3,8 +3,7 @@ import axios from "axios";
 
 const UserModal = ({ user, onClose, onSave, token }) => {
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
+    name: user?.name || "",
     email: user?.email || "",
     role: user?.role || "USER",
     password: "",
@@ -53,7 +52,7 @@ const UserModal = ({ user, onClose, onSave, token }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1 dark:text-gray-300">
-              First Name
+              Name
             </label>
             <input
               type="text"
@@ -65,20 +64,7 @@ const UserModal = ({ user, onClose, onSave, token }) => {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1 dark:text-gray-300">
-              Last Name
-            </label>
-            <input
-              type="text"
-              value={formData.lastName}
-              onChange={(e) =>
-                setFormData({ ...formData, lastName: e.target.value })
-              }
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              required
-            />
-          </div>
+
           <div>
             <label className="block text-sm font-medium mb-1 dark:text-gray-300">
               Email

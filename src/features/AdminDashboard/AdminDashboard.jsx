@@ -46,13 +46,17 @@ const AdminDashboard = () => {
       case 1:
         return "Confirmed";
       case 2:
-        return "Processing";
+        return "Paid";
       case 3:
-        return "Shipped";
+        return "Processing";
       case 4:
-        return "Delivered";
+        return "Shipped";
       case 5:
+        return "Delivered";
+      case 6:
         return "Cancelled";
+      case 7:
+        return "Refunded";
       default:
         return "Unknown";
     }

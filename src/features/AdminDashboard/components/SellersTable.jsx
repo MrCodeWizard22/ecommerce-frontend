@@ -4,10 +4,8 @@ import { Store } from "lucide-react";
 const SellersTable = ({
   sellers,
   products,
-  handleAddUser,
   handleEditUser,
   handleViewSellerProducts,
-  handleToggleSellerStatus,
   handleDeleteUser,
 }) => {
   return (
@@ -17,12 +15,6 @@ const SellersTable = ({
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             Sellers Management ({sellers.length} sellers)
           </h3>
-          <button
-            onClick={handleAddUser}
-            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md text-sm"
-          >
-            Add Seller
-          </button>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -50,7 +42,7 @@ const SellersTable = ({
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {seller.firstName} {seller.lastName}
+                      {seller.name.toUpperCase()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
@@ -75,12 +67,7 @@ const SellersTable = ({
                     >
                       Products
                     </button>
-                    <button
-                      onClick={() => handleToggleSellerStatus(seller)}
-                      className="text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300"
-                    >
-                      Suspend
-                    </button>
+
                     <button
                       onClick={() => handleDeleteUser(seller.userId)}
                       className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"

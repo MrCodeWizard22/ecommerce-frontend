@@ -35,7 +35,7 @@ const UsersTable = ({ users, handleEditUser, handleDeleteUser }) => {
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {user.firstName} {user.lastName}
+                      {user.name.toUpperCase()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">

@@ -34,7 +34,7 @@ const RecentOrders = ({ orders, getOrderStatusText, getOrderStatusColor }) => {
                   #{order.orderId}
                 </td>
                 <td className="py-2 text-sm text-gray-800 dark:text-gray-200">
-                  {order.user?.firstName} {order.user?.lastName}
+                  {order.shippingDetails?.fullName.toUpperCase()}
                 </td>
                 <td className="py-2 text-sm text-gray-800 dark:text-gray-200">
                   ₹{order.orderTotal}

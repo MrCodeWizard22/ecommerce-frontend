@@ -8,6 +8,7 @@ const ProductsTable = ({
   handleEditProduct,
   handleDeleteProduct,
 }) => {
+  console.log(products);
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -67,7 +68,7 @@ const ProductsTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {product.seller?.firstName} {product.seller?.lastName}
+                    {product?.seller?.name.toUpperCase()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     ₹{product.price}

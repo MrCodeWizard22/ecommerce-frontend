@@ -40,7 +40,7 @@ const OrdersTable = ({
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {orders.slice(0, 10).map((order) => (
+              {orders.map((order) => (
                 <tr
                   key={order.orderId}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -49,7 +49,7 @@ const OrdersTable = ({
                     #{order.orderId}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {order.user?.firstName} {order.user?.lastName}
+                    {order.shippingDetails?.fullName.toUpperCase()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     ₹{order.orderTotal}
