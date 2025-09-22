@@ -7,45 +7,58 @@ import {
   XCircle,
 } from "lucide-react";
 
+const statusMap = {
+  0: "Pending",
+  1: "Confirmed",
+  2: "Paid",
+  3: "Processing",
+  4: "Shipped",
+  5: "Delivered",
+  6: "Cancelled",
+  7: "Refunded",
+};
+
+const getStatusColor = (statusCode) => {
+  switch (statusCode) {
+    case 0:
+      return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
+    case 1:
+    case 2:
+      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+    case 3:
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+    case 4:
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
+    case 5:
+      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+    case 6:
+    case 7:
+      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+  }
+};
+
+const getStatusIcon = (statusCode) => {
+  switch (statusCode) {
+    case 0:
+    case 3:
+      return <Clock size={16} className="text-orange-600" />;
+    case 1:
+    case 2:
+    case 5:
+      return <CheckCircle size={16} className="text-green-600" />;
+    case 4:
+      return <Package size={16} className="text-yellow-600" />;
+    case 6:
+    case 7:
+      return <XCircle size={16} className="text-red-600" />;
+    default:
+      return <Clock size={16} className="text-gray-600" />;
+  }
+};
+
 export const OrdersTab = ({ orders }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "delivered":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
-      case "processing":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-      case "shipped":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
-      case "cancelled":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
-      case "confirmed":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
-      case "pending":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "delivered":
-        return <CheckCircle size={16} className="text-green-600" />;
-      case "processing":
-        return <Clock size={16} className="text-blue-600" />;
-      case "shipped":
-        return <Package size={16} className="text-yellow-600" />;
-      case "cancelled":
-        return <XCircle size={16} className="text-red-600" />;
-      case "confirmed":
-        return <CheckCircle size={16} className="text-green-600" />;
-      case "pending":
-        return <Clock size={16} className="text-orange-600" />;
-      default:
-        return <Clock size={16} className="text-gray-600" />;
-    }
-  };
-
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold dark:text-white">Order History</h3>
@@ -78,7 +91,7 @@ export const OrdersTab = ({ orders }) => {
                       order.status
                     )}`}
                   >
-                    {order.status}
+                    {statusMap[order.status]}
                   </span>
                 </div>
               </div>

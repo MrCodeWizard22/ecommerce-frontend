@@ -1,22 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getUserOrders } from "../../api/orderApi";
-
+import axios from "axios";
 export const useUserDashboard = () => {
-  const { email, userId } = useSelector((state) => state.auth);
+  const { email, userId, token } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userProfile, setUserProfile] = useState({
-    name: "",
-    email: email || "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "",
-  });
+  const [userProfile, setUserProfile] = useState(null);
   const [orders, setOrders] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [activeTab, setActiveTab] = useState("Profile");
@@ -31,17 +22,16 @@ export const useUserDashboard = () => {
       }
 
       try {
-        setUserProfile({
-          name: email?.split("@")[0] || "User",
-          email: email || "",
-          phone: "",
-          address: "",
-          city: "",
-          state: "",
-          zipCode: "",
-          country: "India",
-        });
-
+        const profileResponse = await axios.get(
+          "http://localhost:8080/api/auth/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setUserProfile(profileResponse.data || {});
         const ordersResponse = await getUserOrders(userId);
         const transformedOrders =
           ordersResponse?.orders?.map((order) => ({
@@ -70,7 +60,7 @@ export const useUserDashboard = () => {
     };
 
     fetchUserData();
-  }, [userId, email]);
+  }, [userId]);
 
   return {
     loading,
