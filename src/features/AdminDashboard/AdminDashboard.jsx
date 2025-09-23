@@ -252,12 +252,10 @@ const AdminDashboard = () => {
   const handleViewOrder = (order) => {
     alert(
       `Order Details:\nID: ${order.orderId}\nCustomer: ${
-        order.user?.firstName
-      } ${order.user?.lastName}\nTotal: ₹${
-        order.orderTotal
-      }\nStatus: ${getOrderStatusText(order.orderStatus)}\nDate: ${new Date(
-        order.orderDate
-      ).toLocaleDateString()}`
+        order?.shippingDetails?.fullName
+      }\nTotal: ₹${order.orderTotal}\nStatus: ${getOrderStatusText(
+        order.orderStatus
+      )}\nDate: ${new Date(order.orderDate).toLocaleDateString()}`
     );
   };
 

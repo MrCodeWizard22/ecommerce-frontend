@@ -27,13 +27,17 @@ const getOrderStatusText = (statusCode) => {
     case 1:
       return "Confirmed";
     case 2:
-      return "Processing";
+      return "Paid";
     case 3:
-      return "Shipped";
+      return "Processing";
     case 4:
-      return "Delivered";
+      return "Shipped";
     case 5:
+      return "Delivered";
+    case 6:
       return "Cancelled";
+    case 7:
+      return "Refunded";
     default:
       return "Unknown";
   }
@@ -78,6 +82,7 @@ const SellerDashboard = () => {
 
         try {
           const ordersResponse = await getSellerOrders(userId);
+          console.log(ordersResponse);
           if (ordersResponse && ordersResponse.orders) {
             const transformedOrders = ordersResponse.orders.map((order) => {
               let customerName = "Unknown Customer";
@@ -169,16 +174,20 @@ const SellerDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case "delivered":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
-      case "processing":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
       case "pending":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
-      case "cancelled":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      case "confirmed":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "paid":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+      case "processing":
+        return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200";
+      case "shipped":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "delivered":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
     }
   };
 

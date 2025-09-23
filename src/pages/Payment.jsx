@@ -18,7 +18,7 @@ const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState(null);
-  const [pendingOrderData, setPendingOrderData] = useState(null); // Store order data until payment success
+  const [pendingOrderData, setPendingOrderData] = useState(null);
   const userId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
@@ -46,7 +46,6 @@ const Payment = () => {
   }, []);
 
   const handleBack = () => {
-    // Clear pending order data when going back
     setPendingOrderData(null);
     navigate(-1);
   };
@@ -62,15 +61,15 @@ const Payment = () => {
 
     try {
       const amountToSend = Math.round(amount);
-      console.log("Sending amount to backend:", amountToSend);
-      console.log("Payment state:", {
-        amount,
-        productId,
-        quantity,
-        items,
-        shippingInfo,
-        fromCheckout,
-      });
+      // console.log("Sending amount to backend:", amountToSend);
+      // console.log("Payment state:", {
+      //   amount,
+      //   productId,
+      //   quantity,
+      //   items,
+      //   shippingInfo,
+      //   fromCheckout,
+      // });
 
       let orderData;
 
@@ -137,7 +136,7 @@ const Payment = () => {
         setPendingOrderData(null);
       }
 
-      console.log("Order data received:", orderData);
+      // console.log("Order data received:", orderData);
 
       if (!orderData) {
         throw new Error("No order data received");
@@ -190,7 +189,7 @@ const Payment = () => {
         },
       };
 
-      console.log("Razorpay options:", options);
+      // console.log("Razorpay options:", options);
 
       // Check if Razorpay is loaded
       if (!window.Razorpay) {
@@ -215,7 +214,6 @@ const Payment = () => {
   const handlePaymentSuccess = async (response) => {
     try {
       setLoading(true);
-      console.log("Payment success response:", response);
 
       const verificationData = {
         razorpay_order_id: response.razorpay_order_id,
@@ -223,69 +221,69 @@ const Payment = () => {
         razorpay_signature: response.razorpay_signature,
       };
 
-      console.log("Sending verification data:", verificationData);
+      const result = await verifyPayment(verificationData);
 
-      try {
-        const result = await verifyPayment(verificationData);
-        console.log("Verification result:", result);
-
-        if (result && result.status === "success") {
-          // Payment verified successfully
-          console.log("Payment verified successfully!");
-
-          // Clear cart from frontend state if this was a cart checkout
-          if (pendingOrderData && pendingOrderData.type === "cart") {
-            console.log("Clearing cart from frontend state for user:", userId);
-            dispatch(clearCart(userId));
-          }
-
-          alert("Payment successful! Your order has been placed.");
-
-          setTimeout(() => {
-            navigate("/");
-          }, 3000);
-        } else {
-          setError("Payment verification failed. Please contact support.");
+      if (result?.status === "success") {
+        if (pendingOrderData?.type === "cart") {
+          dispatch(clearCart(userId));
         }
-      } catch (verifyError) {
-        console.error("Verification request failed:", verifyError);
-
-        alert(
-          "Your payment was processed, but we couldn't verify it. Please check your email for confirmation."
-        );
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+        alert("Payment successful! Your order has been placed.");
+        navigate("/");
+      } else {
+        setError(result?.message || "Payment verification failed.");
       }
     } catch (error) {
-      console.error("Payment verification error:", error);
-      setError("Payment verification failed. Please try again later.");
+      console.error("Payment verification failed:", error);
+      setError(
+        error.response?.data?.message ||
+          "Payment verification failed. Please contact support."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--background-color)] text-[var(--text-color)]">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">Payment Details</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-[var(--text-color)]">
+      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+          Payment Details
+        </h2>
 
         <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-          <p className="text-lg font-semibold">Total Amount: ₹{amount}</p>
-          {productId && <p className="text-sm mt-2">Product ID: {productId}</p>}
-          {quantity && <p className="text-sm">Quantity: {quantity}</p>}
-          {items && <p className="text-sm">Items: {items.length}</p>}
+          <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Total Amount: ₹{amount}
+          </p>
+          {productId && (
+            <p className="text-sm mt-2 text-gray-700 dark:text-gray-300">
+              Product ID: {productId}
+            </p>
+          )}
+          {quantity && (
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Quantity: {quantity}
+            </p>
+          )}
+          {items && (
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Items: {items.length}
+            </p>
+          )}
 
           {shippingInfo && (
-            <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-              <p className="font-medium">Order Breakdown:</p>
-              <div className="text-sm mt-2 space-y-1">
+            <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                Order Breakdown:
+              </p>
+              <div className="text-sm mt-2 space-y-1 text-gray-700 dark:text-gray-300">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span>₹{amount - (shippingInfo.shippingCost || 0)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping ({shippingInfo.shippingMethod}):</span>
+                  <span>
+                    Shipping ({shippingInfo.shippingMethod || "Standard"}):
+                  </span>
                   <span>
                     {shippingInfo.shippingCost === 0
                       ? "Free"
@@ -298,22 +296,36 @@ const Payment = () => {
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-                <p className="font-medium">Shipping to:</p>
-                <p className="text-sm">{shippingInfo.fullName}</p>
-                <p className="text-sm">{shippingInfo.address}</p>
-                <p className="text-sm">
+              <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+                <p className="font-medium text-gray-800 dark:text-gray-200">
+                  Shipping to:
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {shippingInfo.fullName}
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {shippingInfo.address}
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
                   {shippingInfo.city}, {shippingInfo.state}{" "}
                   {shippingInfo.pincode}
                 </p>
-                <p className="text-sm">{shippingInfo.country}</p>
-                <p className="text-sm mt-1">Phone: {shippingInfo.phone}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {shippingInfo.country}
+                </p>
+                <p className="text-sm mt-1 text-gray-700 dark:text-gray-300">
+                  Phone: {shippingInfo.phone}
+                </p>
               </div>
             </div>
           )}
         </div>
 
-        {error && <div className="mb-4 text-red-500">{error}</div>}
+        {error && (
+          <div className="mb-4 text-red-500 dark:text-red-400 font-medium">
+            {error}
+          </div>
+        )}
 
         <div className="space-y-3">
           <button
