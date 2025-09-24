@@ -19,7 +19,7 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.userId);
   const role = useSelector((state) => state.auth.role);
-
+  console.log(userId);
   useEffect(() => {
     if (id) {
       getProductById(id)
@@ -30,13 +30,10 @@ const ProductDetails = () => {
 
   const showNotification = (message, type) => {
     setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: "", type: "" });
-    }, 3000);
   };
 
   const handleAddToCart = () => {
-    if (!userId) {
+    if (userId == null) {
       showNotification("Please log in to add items to cart", "error");
       return;
     }

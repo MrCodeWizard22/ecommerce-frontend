@@ -7,7 +7,7 @@ const ProductRequestsTable = ({
   notifications,
 }) => {
   const pendingRequests = productRequests.filter((req) => req.status === 0);
-
+  console.log(productRequests);
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -61,7 +61,7 @@ const ProductRequestsTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {request.seller?.firstName} {request.seller?.lastName}
+                    {request.seller?.name.toUpperCase()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     ₹{request.price}

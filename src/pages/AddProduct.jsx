@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { requestProduct } from "../api/productApi.jsx";
 import { getAllCategories } from "../api/categoryService.jsx";
+import { useSelector } from "react-redux";
 
 const AddProduct = () => {
+  const id = useSelector((state) => state.auth.userId);
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -10,7 +12,7 @@ const AddProduct = () => {
     quantity: "",
     categoryId: "",
     image: null,
-    sellerId: "",
+    sellerId: id,
   });
 
   const [categories, setCategories] = useState([]);
@@ -142,15 +144,6 @@ const AddProduct = () => {
           name="quantity"
           placeholder="Quantity"
           value={product.quantity}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-400 dark:border-gray-600 dark:text-white rounded mb-2 bg-[var(--background-color)] text-[var(--text-color)]"
-          required
-        />
-        <input
-          type="number"
-          name="sellerId"
-          placeholder="Seller ID"
-          value={product.sellerId}
           onChange={handleChange}
           className="w-full p-2 border border-gray-400 dark:border-gray-600 dark:text-white rounded mb-2 bg-[var(--background-color)] text-[var(--text-color)]"
           required

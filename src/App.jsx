@@ -12,11 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems } from "./redux/cartSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
-import ProductRequests from "./pages/ProductRequests";
 import Checkout from "./pages/Checkout";
 import ShippingDetails from "./pages/ShippingDetails";
 import Payment from "./pages/Payment";
 import OrderTracking from "./pages/OrderTracking";
+import Contact from "./pages/Contact";
 function App() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.userId);
@@ -34,6 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -49,7 +50,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/admin/product-requests" element={<ProductRequests />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/api/auth/register" element={<Register />} />
         <Route path="/api/auth/login" element={<Login />} />

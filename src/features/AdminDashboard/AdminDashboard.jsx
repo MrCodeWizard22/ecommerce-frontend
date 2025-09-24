@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   Users,
   ShoppingBag,
@@ -9,6 +9,7 @@ import {
   BarChart2,
   Settings,
   Bell,
+  MessageCircle,
 } from "lucide-react";
 
 // Import modular components
@@ -20,6 +21,7 @@ import OrdersTable from "./components/OrdersTable";
 import ProductRequestsTable from "./components/ProductRequestsTable";
 import ProductModal from "./components/ProductModal";
 import UserModal from "./components/UserModal";
+import MessageTable from "./components/MessageTable";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -35,6 +37,7 @@ const AdminDashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -91,6 +94,7 @@ const AdminDashboard = () => {
         sellersRes,
         requestsRes,
         categoriesRes,
+        messagesRes,
       ] = await Promise.all([
         axios.get("http://localhost:8080/api/admin/users", {
           headers: { Authorization: `Bearer ${token}` },
@@ -110,6 +114,9 @@ const AdminDashboard = () => {
         axios.get("http://localhost:8080/api/categories", {
           headers: { Authorization: `Bearer ${token}` },
         }),
+        axios.get("http://localhost:8080/api/contact/all", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
       setUsers(usersRes.data);
       setOrders(ordersRes.data);
@@ -117,6 +124,7 @@ const AdminDashboard = () => {
       setSellers(sellersRes.data);
       setProductRequests(requestsRes.data);
       setCategories(categoriesRes.data);
+      setMessages(messagesRes.data);
 
       const pendingRequests = requestsRes.data.filter(
         (req) => req.status === 0
@@ -168,7 +176,7 @@ const AdminDashboard = () => {
 
   const handleAddProduct = () => {
     setEditingProduct(null);
-    setShowProductModal(true);
+    navigate("/addProduct");
   };
 
   const handleEditProduct = (product) => {
@@ -303,6 +311,7 @@ const AdminDashboard = () => {
     { name: "Orders", icon: <ShoppingBag size={20} /> },
     { name: "Products", icon: <Package size={20} /> },
     { name: "Product Requests", icon: <Bell size={20} /> },
+    { name: "Messages", icon: <MessageCircle size={20} /> },
     { name: "Settings", icon: <Settings size={20} /> },
   ];
 
@@ -369,6 +378,14 @@ const AdminDashboard = () => {
             notifications={notifications}
           />
         );
+      case "Messages":
+        return (
+          <MessageTable
+            messages={messages}
+            token={token}
+            fetchData={fetchData}
+          />
+        );
       default:
         return <div>Content for {activeTab}</div>;
     }
@@ -401,6 +418,11 @@ const AdminDashboard = () => {
                   {item.name === "Product Requests" && notifications > 0 && (
                     <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                       {notifications}
+                    </span>
+                  )}
+                  {item.name == "Messages" && messages.length > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {messages.length}
                     </span>
                   )}
                 </button>

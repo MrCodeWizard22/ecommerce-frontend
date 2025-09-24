@@ -6,6 +6,7 @@ import {
   Package,
   XCircle,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const statusMap = {
   0: "Pending",
@@ -59,6 +60,8 @@ const getStatusIcon = (statusCode) => {
 };
 
 export const OrdersTab = ({ orders }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold dark:text-white">Order History</h3>
@@ -117,7 +120,10 @@ export const OrdersTab = ({ orders }) => {
                   <p className="font-semibold text-lg dark:text-white">
                     Total: ₹{order.total}
                   </p>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  <button
+                    onClick={() => navigate(`/order-tracking/${order.id}`)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
                     View Details
                   </button>
                 </div>

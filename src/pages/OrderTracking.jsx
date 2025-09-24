@@ -18,13 +18,17 @@ const OrderTracking = () => {
       case 1:
         return "Confirmed";
       case 2:
-        return "Processing";
+        return "Paid";
       case 3:
-        return "Shipped";
+        return "Processing";
       case 4:
-        return "Delivered";
+        return "Shipped";
       case 5:
+        return "Delivered";
+      case 6:
         return "Cancelled";
+      case 7:
+        return "Refunded";
       default:
         return "Unknown";
     }
@@ -37,7 +41,8 @@ const OrderTracking = () => {
 
         // Fetch order details
         const orderData = await getOrderById(orderId);
-        setOrder(orderData);
+        console.log(orderData.order);
+        setOrder(orderData.order);
 
         // Set shipping details from order data if available
         if (orderData && orderData.shippingDetails) {
@@ -170,6 +175,18 @@ const OrderTracking = () => {
                   {getOrderStatusText(order?.orderStatus)}
                 </span>
               </div>
+
+              {/* Show cancellation reason if cancelled */}
+              {order?.orderStatus === 6 && order?.cancellationReason && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Cancellation Reason:
+                  </span>
+                  <span className="text-red-600 dark:text-red-400">
+                    {order.cancellationReason}
+                  </span>
+                </div>
+              )}
 
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-300">
