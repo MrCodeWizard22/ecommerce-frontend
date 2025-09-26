@@ -7,7 +7,6 @@ const OrdersTable = ({
   handleViewOrder,
   handleUpdateOrderStatus,
 }) => {
-  console.log(orders);
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">

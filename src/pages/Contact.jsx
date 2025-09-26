@@ -4,7 +4,6 @@ import { API_URL } from "../config";
 
 const Contact = () => {
   const token = useSelector((state) => state.auth.token);
-  console.log(token);
   const [formData, setFormData] = useState({
     name: "",
     email: "",

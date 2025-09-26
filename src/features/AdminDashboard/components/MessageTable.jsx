@@ -3,7 +3,6 @@ import axios from "axios";
 import { API_URL } from "../../../config";
 
 const MessageTable = ({ messages, token, fetchData }) => {
-  console.log(messages);
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this message?")) {
       try {

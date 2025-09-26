@@ -4,7 +4,6 @@ import appClient from "./appClient";
 export const getAllProducts = async () => {
   try {
     const response = await appClient.get("/products");
-    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -52,7 +51,6 @@ export const requestProduct = async (product) => {
 export const getProductsBySellerId = async (sellerId) => {
   try {
     const response = await appClient.get(`/products/seller/${sellerId}`);
-    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(

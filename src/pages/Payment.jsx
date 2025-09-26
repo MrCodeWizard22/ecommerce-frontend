@@ -128,8 +128,6 @@ const Payment = () => {
         setPendingOrderData(null);
       }
 
-      // console.log("Order data received:", orderData);
-
       if (!orderData) {
         throw new Error("No order data received");
       }
@@ -180,8 +178,6 @@ const Payment = () => {
           test_mode: "This is a test payment. Use test card details.",
         },
       };
-
-      // console.log("Razorpay options:", options);
 
       // Check if Razorpay is loaded
       if (!window.Razorpay) {

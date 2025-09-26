@@ -82,7 +82,6 @@ const SellerDashboard = () => {
 
         try {
           const ordersResponse = await getSellerOrders(userId);
-          console.log(ordersResponse);
           if (ordersResponse && ordersResponse.orders) {
             const transformedOrders = ordersResponse.orders.map((order) => {
               let customerName = "Unknown Customer";
@@ -192,13 +191,11 @@ const SellerDashboard = () => {
   };
 
   const handleEditProduct = (productId) => {
-    console.log("Edit product:", productId);
     alert("Edit functionality will be implemented soon!");
   };
 
   const handleDeleteProduct = (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      console.log("Delete product:", productId);
       alert("Delete functionality will be implemented soon!");
     }
   };

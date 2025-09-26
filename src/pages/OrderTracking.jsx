@@ -41,7 +41,6 @@ const OrderTracking = () => {
 
         // Fetch order details
         const orderData = await getOrderById(orderId);
-        console.log(orderData.order);
         setOrder(orderData.order);
 
         // Set shipping details from order data if available

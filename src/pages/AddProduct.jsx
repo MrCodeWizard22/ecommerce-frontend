@@ -71,7 +71,6 @@ const AddProduct = () => {
     try {
       await requestProduct(formData);
       setMessage("Product added successfully!");
-      console.log("Product added successfully!");
     } catch (error) {
       console.error("Error adding product:", error);
       setMessage("Failed to add product.");
