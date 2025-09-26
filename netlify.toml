@@ -1,0 +1,10 @@
+[build]
+  base = "ecommerce-frontend"          
+  publish = "ecommerce-frontend/dist"   
+  command = "npm run build"             
+
+[build.environment]
+  NODE_VERSION = "22.11.0"              
+
+[functions]
+  directory = "ecommerce-frontend/netlify/functions"  
