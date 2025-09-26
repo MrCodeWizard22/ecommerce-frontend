@@ -1,8 +1,9 @@
 import axios from "axios";
+import { API_URL } from "../config";
 
 export const getAllCategories = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/categories");
+    const response = await axios.get(`${API_URL}/api/categories`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -12,7 +13,7 @@ export const getAllCategories = async () => {
 export const searchCategry = async (keyword) => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/categories/search/${keyword}`
+      `${API_URL}/api/categories/search/${keyword}`
     );
     return response.data;
   } catch (error) {

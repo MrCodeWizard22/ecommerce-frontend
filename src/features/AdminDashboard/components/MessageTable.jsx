@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
+import { API_URL } from "../../../config";
 
 const MessageTable = ({ messages, token, fetchData }) => {
+  console.log(messages);
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this message?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/contact/${id}`, {
+        await axios.delete(`${API_URL}/api/contact/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchData();

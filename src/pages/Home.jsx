@@ -3,6 +3,7 @@ import CarouselCustomNavigation from "../components/Carousel";
 import CardComponent from "../components/CardComponent";
 import { getAllProducts } from "../api/productApi";
 import { getAllCategories } from "../api/categoryService";
+import { API_URL } from "../config";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -132,7 +133,7 @@ const Home = () => {
                 name={product.name}
                 description={product.description}
                 category={product.category}
-                imageUrl={`http://localhost:8080/images/${product.imageUrl}`}
+                imageUrl={`${API_URL}/images/${product.imageUrl}`}
                 price={product.price}
                 quantity={product.quantity}
               />

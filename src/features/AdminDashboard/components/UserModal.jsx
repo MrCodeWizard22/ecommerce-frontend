@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../../config";
 
 const UserModal = ({ user, onClose, onSave, token }) => {
   const [formData, setFormData] = useState({
@@ -18,20 +19,16 @@ const UserModal = ({ user, onClose, onSave, token }) => {
       };
 
       if (user) {
-        await axios.put(
-          `http://localhost:8080/api/admin/users/${user.userId}`,
-          userData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await axios.put(`${API_URL}/api/admin/users/${user.userId}`, userData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         alert("User updated successfully!");
       } else {
         if (!formData.password) {
           alert("Password is required for new users");
           return;
         }
-        await axios.post("http://localhost:8080/api/admin/users", userData, {
+        await axios.post(`${API_URL}/api/admin/users`, userData, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("User created successfully!");

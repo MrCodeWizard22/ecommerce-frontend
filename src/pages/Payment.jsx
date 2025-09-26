@@ -8,6 +8,7 @@ import {
 } from "../api/paymentApi";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/cartSlice";
+import { RAZORPAY_CHECKOUT } from "../config";
 
 const Payment = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ const Payment = () => {
 
     // Load Razorpay script
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = `${RAZORPAY_CHECKOUT}`;
     script.async = true;
     document.body.appendChild(script);
 
@@ -61,15 +62,6 @@ const Payment = () => {
 
     try {
       const amountToSend = Math.round(amount);
-      // console.log("Sending amount to backend:", amountToSend);
-      // console.log("Payment state:", {
-      //   amount,
-      //   productId,
-      //   quantity,
-      //   items,
-      //   shippingInfo,
-      //   fromCheckout,
-      // });
 
       let orderData;
 

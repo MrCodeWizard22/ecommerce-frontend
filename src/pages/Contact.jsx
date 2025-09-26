@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { API_URL } from "../config";
 
 const Contact = () => {
   const token = useSelector((state) => state.auth.token);
@@ -17,7 +18,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8080/api/contact/add", {
+      const res = await fetch(`${API_URL}/api/contact/add`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

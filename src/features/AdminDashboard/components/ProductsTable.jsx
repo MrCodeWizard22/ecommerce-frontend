@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Package } from "lucide-react";
+import { API_URL } from "../../../config";
 
 const ProductsTable = ({
   products,
@@ -54,7 +55,7 @@ const ProductsTable = ({
                     <div className="flex items-center">
                       <img
                         className="h-10 w-10 rounded-lg object-cover"
-                        src={`http://localhost:8080/images/${product.imageUrl}`}
+                        src={`${API_URL}/images/${product.imageUrl}`}
                         alt={product.productName}
                       />
                       <div className="ml-4">

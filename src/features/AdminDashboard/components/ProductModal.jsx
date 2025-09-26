@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../../config";
 
 const ProductModal = ({ product, categories, onClose, onSave, token }) => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const ProductModal = ({ product, categories, onClose, onSave, token }) => {
 
       if (product) {
         await axios.put(
-          `http://localhost:8080/api/admin/products/${product.productId}`,
+          `${API_URL}/admin/products/${product.productId}`,
           productData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -31,13 +32,9 @@ const ProductModal = ({ product, categories, onClose, onSave, token }) => {
         );
         alert("Product updated successfully!");
       } else {
-        await axios.post(
-          "http://localhost:8080/api/admin/products",
-          productData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await axios.post(`${API_URL}/api/admin/products`, productData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         alert("Product created successfully!");
       }
       onSave();

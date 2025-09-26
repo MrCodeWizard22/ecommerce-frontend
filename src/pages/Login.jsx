@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/authSlice";
+import { API_URL } from "../config";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -24,10 +25,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        formData
-      );
+      const response = await axios.post(`${API_URL}/api/auth/login`, formData);
 
       if (response.status === 200) {
         dispatch(

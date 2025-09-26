@@ -1,19 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../config";
 
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:8080/api/cart?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/cart?userId=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -27,7 +25,7 @@ export const addToCart = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:8080/api/cart/add",
+        `${API_URL}/api/cart/add`,
         {
           userId,
           productId,
@@ -52,7 +50,7 @@ export const updateCartItemQuantity = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:8080/api/cart/${cartId}`,
+        `${API_URL}/api/cart/${cartId}`,
         { quantity },
         {
           headers: {
@@ -72,7 +70,7 @@ export const removeFromCart = createAsyncThunk(
   async (cartId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8080/api/cart/${cartId}`, {
+      await axios.delete(`${API_URL}/api/cart/${cartId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,14 +87,11 @@ export const clearCart = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(
-        `http://localhost:8080/api/cart/clear?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_URL}/api/cart/clear?userId=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return userId;
     } catch (error) {
       return rejectWithValue(error.response.data);

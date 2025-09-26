@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getUserOrders } from "../../api/orderApi";
 import axios from "axios";
+import { API_URL } from "../../config";
 export const useUserDashboard = () => {
   const { email, userId, token } = useSelector((state) => state.auth);
 
@@ -22,15 +23,12 @@ export const useUserDashboard = () => {
       }
 
       try {
-        const profileResponse = await axios.get(
-          "http://localhost:8080/api/auth/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const profileResponse = await axios.get(`${API_URL}/api/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         setUserProfile(profileResponse.data || {});
         const ordersResponse = await getUserOrders(userId);
         const transformedOrders =

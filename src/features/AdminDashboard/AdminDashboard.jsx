@@ -22,6 +22,7 @@ import ProductRequestsTable from "./components/ProductRequestsTable";
 import ProductModal from "./components/ProductModal";
 import UserModal from "./components/UserModal";
 import MessageTable from "./components/MessageTable";
+import { API_URL } from "../../config";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -96,25 +97,25 @@ const AdminDashboard = () => {
         categoriesRes,
         messagesRes,
       ] = await Promise.all([
-        axios.get("http://localhost:8080/api/admin/users", {
+        axios.get(`${API_URL}/api/admin/users`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/admin/orders", {
+        axios.get(`${API_URL}/api/admin/orders`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/admin/products", {
+        axios.get(`${API_URL}/api/admin/products`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/admin/sellers", {
+        axios.get(`${API_URL}/api/admin/sellers`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/products/requests/all", {
+        axios.get(`${API_URL}/api/products/requests/all`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/categories", {
+        axios.get(`${API_URL}/api/categories`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8080/api/contact/all", {
+        axios.get(`${API_URL}/api/contact/all`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -147,7 +148,7 @@ const AdminDashboard = () => {
   const handleApproveRequest = async (requestId) => {
     try {
       await axios.post(
-        `http://localhost:8080/api/products/requests/approve?requestId=${requestId}`,
+        `${API_URL}/api/products/requests/approve?requestId=${requestId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
   const handleRejectRequest = async (requestId) => {
     try {
       await axios.post(
-        `http://localhost:8080/api/products/requests/reject?requestId=${requestId}`,
+        `${API_URL}/api/products/requests/reject?requestId=${requestId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -187,12 +188,9 @@ const AdminDashboard = () => {
   const handleDeleteProduct = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(
-          `http://localhost:8080/api/admin/products/${productId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await axios.delete(`${API_URL}/api/admin/products/${productId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         fetchData();
         alert("Product deleted successfully!");
       } catch (error) {
@@ -215,7 +213,7 @@ const AdminDashboard = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/admin/users/${userId}`, {
+        await axios.delete(`${API_URL}/api/admin/users/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchData();
@@ -242,7 +240,7 @@ const AdminDashboard = () => {
       try {
         const updatedUser = { ...seller, active: !seller.active };
         await axios.put(
-          `http://localhost:8080/api/admin/users/${seller.userId}`,
+          `${API_URL}/api/admin/users/${seller.userId}`,
           updatedUser,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -291,7 +289,7 @@ const AdminDashboard = () => {
       const selectedStatus = statusOptions[newStatus - 1].value;
       try {
         await axios.put(
-          `http://localhost:8080/api/admin/orders/${orderId}/status`,
+          `${API_URL}/api/admin/orders/${orderId}/status`,
           { status: selectedStatus },
           { headers: { Authorization: `Bearer ${token}` } }
         );

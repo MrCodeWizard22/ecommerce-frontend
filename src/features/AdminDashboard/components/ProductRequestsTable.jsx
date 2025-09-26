@@ -1,4 +1,5 @@
 import React from "react";
+import { API_URL } from "../../../config";
 
 const ProductRequestsTable = ({
   productRequests,
@@ -7,7 +8,6 @@ const ProductRequestsTable = ({
   notifications,
 }) => {
   const pendingRequests = productRequests.filter((req) => req.status === 0);
-  console.log(productRequests);
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -47,7 +47,7 @@ const ProductRequestsTable = ({
                     <div className="flex items-center">
                       <img
                         className="h-10 w-10 rounded-lg object-cover"
-                        src={`http://localhost:8080/images/${request.imageUrl}`}
+                        src={`${API_URL}/images/${request.imageUrl}`}
                         alt={request.name}
                       />
                       <div className="ml-4">

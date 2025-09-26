@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import { getProductById } from "../api/productApi";
+import { API_URL } from "../config";
 
 const ProductDetails = () => {
   // for route products/id
@@ -93,7 +94,7 @@ const ProductDetails = () => {
           {/* Product Image */}
           <div className="flex justify-center bg-white dark:bg-gray-700 p-4 rounded-xl shadow-lg">
             <img
-              src={`http://localhost:8080/images/${product.imageUrl}`}
+              src={`${API_URL}/images/${product.imageUrl}`}
               alt={product.name}
               className="w-80 h-80 md:w-96 md:h-96 object-contain rounded-xl"
             />

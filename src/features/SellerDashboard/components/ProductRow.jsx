@@ -1,4 +1,5 @@
 import React from "react";
+import { API_URL } from "../../../config";
 
 const ProductRow = ({ product, handleEditProduct, handleDeleteProduct }) => {
   return (
@@ -11,7 +12,7 @@ const ProductRow = ({ product, handleEditProduct, handleDeleteProduct }) => {
           <div className="h-10 w-10 flex-shrink-0">
             <img
               className="h-10 w-10 rounded-md object-cover"
-              src={`http://localhost:8080/images/${product.imageUrl}`}
+              src={`${API_URL}/images/${product.imageUrl}`}
               alt={product.name}
               onError={(e) => {
                 e.target.onerror = null;
