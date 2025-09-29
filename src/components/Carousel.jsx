@@ -1,51 +1,55 @@
-import { Carousel } from "@material-tailwind/react";
+import { useState, useEffect } from "react";
 import { ImageUrls } from "../assets/images/ImageUrls";
 
 const CarouselCustomNavigation = () => {
+  const images = [
+    ImageUrls.carousel1,
+    ImageUrls.carousel2,
+    ImageUrls.carousel3,
+  ];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Auto-slide every 3s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
     <div className="relative w-full max-w-screen-xl mx-auto overflow-hidden">
-      {" "}
-      {/* Wrapper */}
-      <Carousel
-        className="rounded-xl my-2 w-full"
-        navigation={({ setActiveIndex, activeIndex, length }) => (
-          <div className="absolute bottom-4 left-2/4 z-50 flex -translate-x-2/4 gap-2">
-            {new Array(length).fill("").map((_, i) => (
-              <span
-                key={i}
-                className={`block h-1 cursor-pointer rounded-2xl transition-all ${
-                  activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
-                }`}
-                onClick={() => setActiveIndex(i)}
-              />
-            ))}
-          </div>
-        )}
+      {/* Slides */}
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${activeIndex * 100}%)` }}
       >
-        <div className="h-[300px] md:h-[400px] lg:h-[500px] w-full overflow-hidden">
-          <img
-            src={ImageUrls.carousel1}
-            alt="image 1"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {images.map((src, i) => (
+          <div
+            key={i}
+            className="h-[300px] md:h-[400px] lg:h-[500px] w-full flex-shrink-0"
+          >
+            <img
+              src={src}
+              alt={`image ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
 
-        <div className="h-[300px] md:h-[400px] lg:h-[500px] w-full overflow-hidden">
-          <img
-            src={ImageUrls.carousel2}
-            alt="image 2"
-            className="w-full h-full object-cover"
+      {/* Navigation dots */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {images.map((_, i) => (
+          <span
+            key={i}
+            onClick={() => setActiveIndex(i)}
+            className={`block h-1 cursor-pointer rounded-2xl transition-all ${
+              activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
+            }`}
           />
-        </div>
-
-        <div className="h-[300px] md:h-[400px] lg:h-[500px] w-full overflow-hidden">
-          <img
-            src={ImageUrls.carousel3}
-            alt="image 3"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </Carousel>
+        ))}
+      </div>
     </div>
   );
 };
